@@ -17,6 +17,16 @@
 #!/bin/bash -e
 
 PATH=$PATH:$GOPATH/bin
-protodir=../../pb
+#protodir=../../pb
+protodir=genproto
 
-protoc --go_out=plugins=grpc:genproto -I $protodir $protodir/demo.proto
+#protoc --go_out=plugins=grpc:genproto -I $protodir $protodir/demo.proto
+
+protoc --go_out=plugins=grpc:genproto -I $protodir -I./vendor $protodir/demo.proto
+
+# replace some strings
+sed -i '' 's/context \"context\"/context \"golang.org\/x\/net\/context\"/g' $protodir/demo.pb.go
+sed -i '' 's/const _ = proto.ProtoPackageIsVersion3/const _ = proto.ProtoPackageIsVersion2/g' $protodir/demo.pb.go
+sed -i '' 's/const _ = grpc.SupportPackageIsVersion6/const _ = grpc.SupportPackageIsVersion4/g' $protodir/demo.pb.go
+sed -i '' 's/grpc.ClientConnInterface/*grpc.ClientConn/g' $protodir/demo.pb.go
+

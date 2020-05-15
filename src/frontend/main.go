@@ -90,7 +90,7 @@ func main() {
 	log.Formatter = &logrus.TextFormatter{}
 
 	go initProfiling(log, "frontend", "1.0.0")
-	go func (log logrus.FieldLogger) {
+	go func(log logrus.FieldLogger) {
 		initTracing(log)
 		initStats(log)
 	}(log)
@@ -184,7 +184,7 @@ func initStackDriverStatsExporter(log logrus.FieldLogger) {
 			// log.Warn is used since there are multiple backends (stackdriver & prometheus)
 			// to store the metrics. In production setup most likely you would use only one backend.
 			// In that case you should use log.Fatal.
-			log.Warn("error creating stackdriver exporter");
+			log.Warn("error creating stackdriver exporter")
 			return
 		}
 	}

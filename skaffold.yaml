@@ -36,8 +36,8 @@ build:
     workspace: src/cartservice
   - imageName: gcr.io/opencensus-microservices-demo/frontend
     workspace: src/frontend
-  - imageName: gcr.io/opencensus-microservices-demo/loadgenerator
-    workspace: src/loadgenerator
+  # - imageName: gcr.io/opencensus-microservices-demo/loadgenerator
+  #  workspace: src/loadgenerator
   - imageName: gcr.io/opencensus-microservices-demo/adservice
     workspace: src/adservice
   - imageName: gcr.io/opencensus-microservices-demo/grafana

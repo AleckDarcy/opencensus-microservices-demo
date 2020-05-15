@@ -38,6 +38,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	_ "github.com/AleckDarcy/reload"
 )
 
 var (
@@ -172,7 +174,7 @@ func (p *productCatalog) Check(ctx context.Context, req *healthpb.HealthCheckReq
 	return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
 }
 
-func (p *productCatalog) ListProducts(context.Context, *pb.Empty) (*pb.ListProductsResponse, error) {
+func (p *productCatalog) ListProducts(context.Context, *pb.ListProductsRequest) (*pb.ListProductsResponse, error) {
 	return &pb.ListProductsResponse{Products: parseCatalog()}, nil
 }
 

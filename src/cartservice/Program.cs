@@ -138,20 +138,22 @@ namespace cartservice
                             string redis = ReadRedisAddress(options.Redis);
 
                             // Redis was specified via command line or environment variable
-                            if (!string.IsNullOrEmpty(redis))
-                            {
-                                // If you want to start cart store using local cache in process, you can replace the following line with this:
-                                // cartStore = new LocalCartStore();
-                                cartStore = new RedisCartStore(redis);
 
-                                return StartServer(hostname, port, cartStore);
-                            }
-                            else
-                            {
+                            // use local cart store
+                            //if (!string.IsNullOrEmpty(redis))
+                            //{
+                            //    // If you want to start cart store using local cache in process, you can replace the following line with this:
+                            //    // cartStore = new LocalCartStore();
+                            //    cartStore = new RedisCartStore(redis);
+                            //
+                            //    return StartServer(hostname, port, cartStore);
+                            //}
+                            //else
+                            //{
                                 Console.WriteLine("Redis cache host(hostname+port) was not specified. Starting a cart service using local store");
                                 Console.WriteLine("If you wanted to use Redis Cache as a backup store, you should provide its address via command line or REDIS_ADDRESS environment variable.");
                                 cartStore = new LocalCartStore();
-                            }
+                            //}
 
                             return StartServer(hostname, port, cartStore);
                         },

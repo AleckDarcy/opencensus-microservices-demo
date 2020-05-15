@@ -18,9 +18,9 @@ import (
 	"context"
 	"time"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/frontend/genproto"
-
 	"github.com/pkg/errors"
+
+	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/frontend/genproto"
 )
 
 const (
@@ -29,7 +29,7 @@ const (
 
 func (fe *frontendServer) getCurrencies(ctx context.Context) ([]string, error) {
 	currs, err := pb.NewCurrencyServiceClient(fe.currencySvcConn).
-		GetSupportedCurrencies(ctx, &pb.Empty{})
+		GetSupportedCurrencies(ctx, &pb.GetSupportedCurrenciesRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (fe *frontendServer) getCurrencies(ctx context.Context) ([]string, error) {
 
 func (fe *frontendServer) getProducts(ctx context.Context) ([]*pb.Product, error) {
 	resp, err := pb.NewProductCatalogServiceClient(fe.productCatalogSvcConn).
-		ListProducts(ctx, &pb.Empty{})
+		ListProducts(ctx, &pb.ListProductsRequest{})
 	return resp.GetProducts(), err
 }
 

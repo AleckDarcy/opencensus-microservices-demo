@@ -34,6 +34,19 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:4f64477035ff1b3c6553b296aab09a7dc3f43cbaf05ab8475e6b4158cc225449"
+  name = "github.com/AleckDarcy/reload"
+  packages = [
+    "core/errors",
+    "core/tracer",
+    "runtime/html",
+    "runtime/html/template",
+  ]
+  pruneopts = "UT"
+  revision = "87d26eaee172df1fb8856ab7884658e01c4a5c7b"
+
+[[projects]]
+  branch = "master"
   digest = "1:d6afaeed1502aa28e80a4ed0981d570ad91b2579193404256ce672ed0a609e0d"
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
@@ -382,6 +395,9 @@
   input-imports = [
     "cloud.google.com/go/profiler",
     "contrib.go.opencensus.io/exporter/stackdriver",
+    "github.com/AleckDarcy/reload/core/tracer",
+    "github.com/AleckDarcy/reload/runtime/html",
+    "github.com/AleckDarcy/reload/runtime/html/template",
     "github.com/golang/protobuf/proto",
     "github.com/google/uuid",
     "github.com/gorilla/mux",
@@ -396,6 +412,8 @@
     "go.opencensus.io/trace",
     "golang.org/x/net/context",
     "google.golang.org/grpc",
+    "google.golang.org/grpc/codes",
+    "google.golang.org/grpc/status",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

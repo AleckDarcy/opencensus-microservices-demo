@@ -33,6 +33,8 @@ import (
 
 	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/shippingservice/genproto"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+
+	_ "github.com/AleckDarcy/reload"
 )
 
 const (
@@ -78,7 +80,6 @@ func (s *server) Check(ctx context.Context, req *healthpb.HealthCheckRequest) (*
 func (s *server) GetQuote(ctx context.Context, in *pb.GetQuoteRequest) (*pb.GetQuoteResponse, error) {
 	log.Printf("[GetQuote] received request")
 	defer log.Printf("[GetQuote] completed request")
-
 	// 1. Our quote system requires the total number of items to be shipped.
 	count := 0
 	for _, item := range in.Items {

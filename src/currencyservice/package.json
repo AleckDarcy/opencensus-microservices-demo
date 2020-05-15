@@ -9,6 +9,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "uuid": "v7.0.3",
     "@google-cloud/debug-agent": "^2.6.0",
     "@google-cloud/profiler": "^0.1.14",
     "@google-cloud/trace-agent": "^2.11.0",

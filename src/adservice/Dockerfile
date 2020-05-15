@@ -6,11 +6,11 @@ WORKDIR /app
 
 # Next three steps are for caching dependency downloads
 # to improve subsequent docker build.
-COPY ["build.gradle", "gradlew", "./"]
-COPY gradle gradle
-RUN ./gradlew downloadRepos
+#COPY ["build.gradle", "gradlew", "./"]
+#COPY gradle gradle
+#RUN ./gradlew downloadRepos
 
 COPY . .
-RUN ./gradlew installDist
+#RUN ./gradlew installDist
 EXPOSE 9555 9090
 ENTRYPOINT ["/app/build/install/hipstershop/bin/AdService"]

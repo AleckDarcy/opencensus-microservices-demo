@@ -13,14 +13,16 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
+import message_pb2 as message__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='demo.proto',
   package='hipstershop',
   syntax='proto3',
-  serialized_pb=_b('\n\ndemo.proto\x12\x0bhipstershop\"0\n\x08\x43\x61rtItem\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\"F\n\x0e\x41\x64\x64ItemRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12#\n\x04item\x18\x02 \x01(\x0b\x32\x15.hipstershop.CartItem\"#\n\x10\x45mptyCartRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"!\n\x0eGetCartRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"=\n\x04\x43\x61rt\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12$\n\x05items\x18\x02 \x03(\x0b\x32\x15.hipstershop.CartItem\"\x07\n\x05\x45mpty\"B\n\x1aListRecommendationsRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x13\n\x0bproduct_ids\x18\x02 \x03(\t\"2\n\x1bListRecommendationsResponse\x12\x13\n\x0bproduct_ids\x18\x01 \x03(\t\"p\n\x07Product\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x0f\n\x07picture\x18\x04 \x01(\t\x12%\n\tprice_usd\x18\x05 \x01(\x0b\x32\x12.hipstershop.Money\">\n\x14ListProductsResponse\x12&\n\x08products\x18\x01 \x03(\x0b\x32\x14.hipstershop.Product\"\x1f\n\x11GetProductRequest\x12\n\n\x02id\x18\x01 \x01(\t\"&\n\x15SearchProductsRequest\x12\r\n\x05query\x18\x01 \x01(\t\"?\n\x16SearchProductsResponse\x12%\n\x07results\x18\x01 \x03(\x0b\x32\x14.hipstershop.Product\"^\n\x0fGetQuoteRequest\x12%\n\x07\x61\x64\x64ress\x18\x01 \x01(\x0b\x32\x14.hipstershop.Address\x12$\n\x05items\x18\x02 \x03(\x0b\x32\x15.hipstershop.CartItem\"8\n\x10GetQuoteResponse\x12$\n\x08\x63ost_usd\x18\x01 \x01(\x0b\x32\x12.hipstershop.Money\"_\n\x10ShipOrderRequest\x12%\n\x07\x61\x64\x64ress\x18\x01 \x01(\x0b\x32\x14.hipstershop.Address\x12$\n\x05items\x18\x02 \x03(\x0b\x32\x15.hipstershop.CartItem\"(\n\x11ShipOrderResponse\x12\x13\n\x0btracking_id\x18\x01 \x01(\t\"a\n\x07\x41\x64\x64ress\x12\x16\n\x0estreet_address\x18\x01 \x01(\t\x12\x0c\n\x04\x63ity\x18\x02 \x01(\t\x12\r\n\x05state\x18\x03 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x04 \x01(\t\x12\x10\n\x08zip_code\x18\x05 \x01(\x05\"<\n\x05Money\x12\x15\n\rcurrency_code\x18\x01 \x01(\t\x12\r\n\x05units\x18\x02 \x01(\x03\x12\r\n\x05nanos\x18\x03 \x01(\x05\"8\n\x1eGetSupportedCurrenciesResponse\x12\x16\n\x0e\x63urrency_codes\x18\x01 \x03(\t\"N\n\x19\x43urrencyConversionRequest\x12 \n\x04\x66rom\x18\x01 \x01(\x0b\x32\x12.hipstershop.Money\x12\x0f\n\x07to_code\x18\x02 \x01(\t\"\x90\x01\n\x0e\x43reditCardInfo\x12\x1a\n\x12\x63redit_card_number\x18\x01 \x01(\t\x12\x17\n\x0f\x63redit_card_cvv\x18\x02 \x01(\x05\x12#\n\x1b\x63redit_card_expiration_year\x18\x03 \x01(\x05\x12$\n\x1c\x63redit_card_expiration_month\x18\x04 \x01(\x05\"e\n\rChargeRequest\x12\"\n\x06\x61mount\x18\x01 \x01(\x0b\x32\x12.hipstershop.Money\x12\x30\n\x0b\x63redit_card\x18\x02 \x01(\x0b\x32\x1b.hipstershop.CreditCardInfo\"(\n\x0e\x43hargeResponse\x12\x16\n\x0etransaction_id\x18\x01 \x01(\t\"R\n\tOrderItem\x12#\n\x04item\x18\x01 \x01(\x0b\x32\x15.hipstershop.CartItem\x12 \n\x04\x63ost\x18\x02 \x01(\x0b\x32\x12.hipstershop.Money\"\xbf\x01\n\x0bOrderResult\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x1c\n\x14shipping_tracking_id\x18\x02 \x01(\t\x12)\n\rshipping_cost\x18\x03 \x01(\x0b\x32\x12.hipstershop.Money\x12.\n\x10shipping_address\x18\x04 \x01(\x0b\x32\x14.hipstershop.Address\x12%\n\x05items\x18\x05 \x03(\x0b\x32\x16.hipstershop.OrderItem\"V\n\x1cSendOrderConfirmationRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\'\n\x05order\x18\x02 \x01(\x0b\x32\x18.hipstershop.OrderResult\"\xa3\x01\n\x11PlaceOrderRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x15\n\ruser_currency\x18\x02 \x01(\t\x12%\n\x07\x61\x64\x64ress\x18\x03 \x01(\x0b\x32\x14.hipstershop.Address\x12\r\n\x05\x65mail\x18\x05 \x01(\t\x12\x30\n\x0b\x63redit_card\x18\x06 \x01(\x0b\x32\x1b.hipstershop.CreditCardInfo\"=\n\x12PlaceOrderResponse\x12\'\n\x05order\x18\x01 \x01(\x0b\x32\x18.hipstershop.OrderResult\"\"\n\nAdsRequest\x12\x14\n\x0c\x63ontext_keys\x18\x01 \x03(\t\"+\n\x0b\x41\x64sResponse\x12\x1c\n\x03\x61\x64s\x18\x01 \x03(\x0b\x32\x0f.hipstershop.Ad\"(\n\x02\x41\x64\x12\x14\n\x0credirect_url\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t2\xca\x01\n\x0b\x43\x61rtService\x12<\n\x07\x41\x64\x64Item\x12\x1b.hipstershop.AddItemRequest\x1a\x12.hipstershop.Empty\"\x00\x12;\n\x07GetCart\x12\x1b.hipstershop.GetCartRequest\x1a\x11.hipstershop.Cart\"\x00\x12@\n\tEmptyCart\x12\x1d.hipstershop.EmptyCartRequest\x1a\x12.hipstershop.Empty\"\x00\x32\x83\x01\n\x15RecommendationService\x12j\n\x13ListRecommendations\x12\'.hipstershop.ListRecommendationsRequest\x1a(.hipstershop.ListRecommendationsResponse\"\x00\x32\x83\x02\n\x15ProductCatalogService\x12G\n\x0cListProducts\x12\x12.hipstershop.Empty\x1a!.hipstershop.ListProductsResponse\"\x00\x12\x44\n\nGetProduct\x12\x1e.hipstershop.GetProductRequest\x1a\x14.hipstershop.Product\"\x00\x12[\n\x0eSearchProducts\x12\".hipstershop.SearchProductsRequest\x1a#.hipstershop.SearchProductsResponse\"\x00\x32\xaa\x01\n\x0fShippingService\x12I\n\x08GetQuote\x12\x1c.hipstershop.GetQuoteRequest\x1a\x1d.hipstershop.GetQuoteResponse\"\x00\x12L\n\tShipOrder\x12\x1d.hipstershop.ShipOrderRequest\x1a\x1e.hipstershop.ShipOrderResponse\"\x00\x32\xb7\x01\n\x0f\x43urrencyService\x12[\n\x16GetSupportedCurrencies\x12\x12.hipstershop.Empty\x1a+.hipstershop.GetSupportedCurrenciesResponse\"\x00\x12G\n\x07\x43onvert\x12&.hipstershop.CurrencyConversionRequest\x1a\x12.hipstershop.Money\"\x00\x32U\n\x0ePaymentService\x12\x43\n\x06\x43harge\x12\x1a.hipstershop.ChargeRequest\x1a\x1b.hipstershop.ChargeResponse\"\x00\x32h\n\x0c\x45mailService\x12X\n\x15SendOrderConfirmation\x12).hipstershop.SendOrderConfirmationRequest\x1a\x12.hipstershop.Empty\"\x00\x32\x62\n\x0f\x43heckoutService\x12O\n\nPlaceOrder\x12\x1e.hipstershop.PlaceOrderRequest\x1a\x1f.hipstershop.PlaceOrderResponse\"\x00\x32K\n\nAdsService\x12=\n\x06GetAds\x12\x17.hipstershop.AdsRequest\x1a\x18.hipstershop.AdsResponse\"\x00\x62\x06proto3')
-)
+  serialized_pb=_b('\n\ndemo.proto\x12\x0bhipstershop\x1a\rmessage.proto\"0\n\x08\x43\x61rtItem\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\"g\n\x0e\x41\x64\x64ItemRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12#\n\x04item\x18\x02 \x01(\x0b\x32\x15.hipstershop.CartItem\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"D\n\x10\x45mptyCartRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"B\n\x0eGetCartRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"=\n\x04\x43\x61rt\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12$\n\x05items\x18\x02 \x03(\x0b\x32\x15.hipstershop.CartItem\"(\n\x05\x45mpty\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"c\n\x1aListRecommendationsRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x13\n\x0bproduct_ids\x18\x02 \x03(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"S\n\x1bListRecommendationsResponse\x12\x13\n\x0bproduct_ids\x18\x01 \x03(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"6\n\x13ListProductsRequest\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"\x91\x01\n\x07Product\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x0f\n\x07picture\x18\x04 \x01(\t\x12%\n\tprice_usd\x18\x05 \x01(\x0b\x32\x12.hipstershop.Money\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"_\n\x14ListProductsResponse\x12&\n\x08products\x18\x01 \x03(\x0b\x32\x14.hipstershop.Product\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"@\n\x11GetProductRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"G\n\x15SearchProductsRequest\x12\r\n\x05query\x18\x01 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"`\n\x16SearchProductsResponse\x12%\n\x07results\x18\x01 \x03(\x0b\x32\x14.hipstershop.Product\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"\x7f\n\x0fGetQuoteRequest\x12%\n\x07\x61\x64\x64ress\x18\x01 \x01(\x0b\x32\x14.hipstershop.Address\x12$\n\x05items\x18\x02 \x03(\x0b\x32\x15.hipstershop.CartItem\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"Y\n\x10GetQuoteResponse\x12$\n\x08\x63ost_usd\x18\x01 \x01(\x0b\x32\x12.hipstershop.Money\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"\x80\x01\n\x10ShipOrderRequest\x12%\n\x07\x61\x64\x64ress\x18\x01 \x01(\x0b\x32\x14.hipstershop.Address\x12$\n\x05items\x18\x02 \x03(\x0b\x32\x15.hipstershop.CartItem\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"I\n\x11ShipOrderResponse\x12\x13\n\x0btracking_id\x18\x01 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"a\n\x07\x41\x64\x64ress\x12\x16\n\x0estreet_address\x18\x01 \x01(\t\x12\x0c\n\x04\x63ity\x18\x02 \x01(\t\x12\r\n\x05state\x18\x03 \x01(\t\x12\x0f\n\x07\x63ountry\x18\x04 \x01(\t\x12\x10\n\x08zip_code\x18\x05 \x01(\x05\"@\n\x1dGetSupportedCurrenciesRequest\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"<\n\x05Money\x12\x15\n\rcurrency_code\x18\x01 \x01(\t\x12\r\n\x05units\x18\x02 \x01(\x03\x12\r\n\x05nanos\x18\x03 \x01(\x05\"Y\n\x1eGetSupportedCurrenciesResponse\x12\x16\n\x0e\x63urrency_codes\x18\x01 \x03(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"o\n\x19\x43urrencyConversionRequest\x12 \n\x04\x66rom\x18\x01 \x01(\x0b\x32\x12.hipstershop.Money\x12\x0f\n\x07to_code\x18\x02 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"\x90\x01\n\x0e\x43reditCardInfo\x12\x1a\n\x12\x63redit_card_number\x18\x01 \x01(\t\x12\x17\n\x0f\x63redit_card_cvv\x18\x02 \x01(\x05\x12#\n\x1b\x63redit_card_expiration_year\x18\x03 \x01(\x05\x12$\n\x1c\x63redit_card_expiration_month\x18\x04 \x01(\x05\"\x86\x01\n\rChargeRequest\x12\"\n\x06\x61mount\x18\x01 \x01(\x0b\x32\x12.hipstershop.Money\x12\x30\n\x0b\x63redit_card\x18\x02 \x01(\x0b\x32\x1b.hipstershop.CreditCardInfo\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"I\n\x0e\x43hargeResponse\x12\x16\n\x0etransaction_id\x18\x01 \x01(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"R\n\tOrderItem\x12#\n\x04item\x18\x01 \x01(\x0b\x32\x15.hipstershop.CartItem\x12 \n\x04\x63ost\x18\x02 \x01(\x0b\x32\x12.hipstershop.Money\"\xe0\x01\n\x0bOrderResult\x12\x10\n\x08order_id\x18\x01 \x01(\t\x12\x1c\n\x14shipping_tracking_id\x18\x02 \x01(\t\x12)\n\rshipping_cost\x18\x03 \x01(\x0b\x32\x12.hipstershop.Money\x12.\n\x10shipping_address\x18\x04 \x01(\x0b\x32\x14.hipstershop.Address\x12%\n\x05items\x18\x05 \x03(\x0b\x32\x16.hipstershop.OrderItem\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"w\n\x1cSendOrderConfirmationRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\'\n\x05order\x18\x02 \x01(\x0b\x32\x18.hipstershop.OrderResult\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"\xc4\x01\n\x11PlaceOrderRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x15\n\ruser_currency\x18\x02 \x01(\t\x12%\n\x07\x61\x64\x64ress\x18\x03 \x01(\x0b\x32\x14.hipstershop.Address\x12\r\n\x05\x65mail\x18\x05 \x01(\t\x12\x30\n\x0b\x63redit_card\x18\x06 \x01(\x0b\x32\x1b.hipstershop.CreditCardInfo\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"^\n\x12PlaceOrderResponse\x12\'\n\x05order\x18\x01 \x01(\x0b\x32\x18.hipstershop.OrderResult\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"B\n\tAdRequest\x12\x14\n\x0c\x63ontext_keys\x18\x01 \x03(\t\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"K\n\nAdResponse\x12\x1c\n\x03\x61\x64s\x18\x01 \x03(\x0b\x32\x0f.hipstershop.Ad\x12\x1f\n\x08\x46I_Trace\x18\x64 \x01(\x0b\x32\r.tracer.Trace\"(\n\x02\x41\x64\x12\x14\n\x0credirect_url\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t2\xca\x01\n\x0b\x43\x61rtService\x12<\n\x07\x41\x64\x64Item\x12\x1b.hipstershop.AddItemRequest\x1a\x12.hipstershop.Empty\"\x00\x12;\n\x07GetCart\x12\x1b.hipstershop.GetCartRequest\x1a\x11.hipstershop.Cart\"\x00\x12@\n\tEmptyCart\x12\x1d.hipstershop.EmptyCartRequest\x1a\x12.hipstershop.Empty\"\x00\x32\x83\x01\n\x15RecommendationService\x12j\n\x13ListRecommendations\x12\'.hipstershop.ListRecommendationsRequest\x1a(.hipstershop.ListRecommendationsResponse\"\x00\x32\x91\x02\n\x15ProductCatalogService\x12U\n\x0cListProducts\x12 .hipstershop.ListProductsRequest\x1a!.hipstershop.ListProductsResponse\"\x00\x12\x44\n\nGetProduct\x12\x1e.hipstershop.GetProductRequest\x1a\x14.hipstershop.Product\"\x00\x12[\n\x0eSearchProducts\x12\".hipstershop.SearchProductsRequest\x1a#.hipstershop.SearchProductsResponse\"\x00\x32\xaa\x01\n\x0fShippingService\x12I\n\x08GetQuote\x12\x1c.hipstershop.GetQuoteRequest\x1a\x1d.hipstershop.GetQuoteResponse\"\x00\x12L\n\tShipOrder\x12\x1d.hipstershop.ShipOrderRequest\x1a\x1e.hipstershop.ShipOrderResponse\"\x00\x32\xcf\x01\n\x0f\x43urrencyService\x12s\n\x16GetSupportedCurrencies\x12*.hipstershop.GetSupportedCurrenciesRequest\x1a+.hipstershop.GetSupportedCurrenciesResponse\"\x00\x12G\n\x07\x43onvert\x12&.hipstershop.CurrencyConversionRequest\x1a\x12.hipstershop.Money\"\x00\x32U\n\x0ePaymentService\x12\x43\n\x06\x43harge\x12\x1a.hipstershop.ChargeRequest\x1a\x1b.hipstershop.ChargeResponse\"\x00\x32h\n\x0c\x45mailService\x12X\n\x15SendOrderConfirmation\x12).hipstershop.SendOrderConfirmationRequest\x1a\x12.hipstershop.Empty\"\x00\x32\x62\n\x0f\x43heckoutService\x12O\n\nPlaceOrder\x12\x1e.hipstershop.PlaceOrderRequest\x1a\x1f.hipstershop.PlaceOrderResponse\"\x00\x32H\n\tAdService\x12;\n\x06GetAds\x12\x16.hipstershop.AdRequest\x1a\x17.hipstershop.AdResponse\"\x00\x62\x06proto3')
+  ,
+  dependencies=[message__pb2.DESCRIPTOR,])
 
 
 
@@ -58,8 +60,8 @@ _CARTITEM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=27,
-  serialized_end=75,
+  serialized_start=42,
+  serialized_end=90,
 )
 
 
@@ -84,6 +86,13 @@ _ADDITEMREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.AddItemRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -96,8 +105,8 @@ _ADDITEMREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=77,
-  serialized_end=147,
+  serialized_start=92,
+  serialized_end=195,
 )
 
 
@@ -115,6 +124,13 @@ _EMPTYCARTREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.EmptyCartRequest.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -127,8 +143,8 @@ _EMPTYCARTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=149,
-  serialized_end=184,
+  serialized_start=197,
+  serialized_end=265,
 )
 
 
@@ -146,6 +162,13 @@ _GETCARTREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.GetCartRequest.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -158,8 +181,8 @@ _GETCARTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=186,
-  serialized_end=219,
+  serialized_start=267,
+  serialized_end=333,
 )
 
 
@@ -196,8 +219,8 @@ _CART = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=221,
-  serialized_end=282,
+  serialized_start=335,
+  serialized_end=396,
 )
 
 
@@ -208,6 +231,13 @@ _EMPTY = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.Empty.FI_Trace', index=0,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -220,8 +250,8 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=284,
-  serialized_end=291,
+  serialized_start=398,
+  serialized_end=438,
 )
 
 
@@ -246,6 +276,13 @@ _LISTRECOMMENDATIONSREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ListRecommendationsRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -258,8 +295,8 @@ _LISTRECOMMENDATIONSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=293,
-  serialized_end=359,
+  serialized_start=440,
+  serialized_end=539,
 )
 
 
@@ -277,6 +314,13 @@ _LISTRECOMMENDATIONSRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ListRecommendationsResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -289,8 +333,39 @@ _LISTRECOMMENDATIONSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=361,
-  serialized_end=411,
+  serialized_start=541,
+  serialized_end=624,
+)
+
+
+_LISTPRODUCTSREQUEST = _descriptor.Descriptor(
+  name='ListProductsRequest',
+  full_name='hipstershop.ListProductsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ListProductsRequest.FI_Trace', index=0,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=626,
+  serialized_end=680,
 )
 
 
@@ -336,6 +411,13 @@ _PRODUCT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.Product.FI_Trace', index=5,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -348,8 +430,8 @@ _PRODUCT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=413,
-  serialized_end=525,
+  serialized_start=683,
+  serialized_end=828,
 )
 
 
@@ -367,6 +449,13 @@ _LISTPRODUCTSRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ListProductsResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -379,8 +468,8 @@ _LISTPRODUCTSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=527,
-  serialized_end=589,
+  serialized_start=830,
+  serialized_end=925,
 )
 
 
@@ -398,6 +487,13 @@ _GETPRODUCTREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.GetProductRequest.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -410,8 +506,8 @@ _GETPRODUCTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=591,
-  serialized_end=622,
+  serialized_start=927,
+  serialized_end=991,
 )
 
 
@@ -429,6 +525,13 @@ _SEARCHPRODUCTSREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.SearchProductsRequest.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -441,8 +544,8 @@ _SEARCHPRODUCTSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=624,
-  serialized_end=662,
+  serialized_start=993,
+  serialized_end=1064,
 )
 
 
@@ -460,6 +563,13 @@ _SEARCHPRODUCTSRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.SearchProductsResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -472,8 +582,8 @@ _SEARCHPRODUCTSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=664,
-  serialized_end=727,
+  serialized_start=1066,
+  serialized_end=1162,
 )
 
 
@@ -498,6 +608,13 @@ _GETQUOTEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.GetQuoteRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -510,8 +627,8 @@ _GETQUOTEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=729,
-  serialized_end=823,
+  serialized_start=1164,
+  serialized_end=1291,
 )
 
 
@@ -529,6 +646,13 @@ _GETQUOTERESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.GetQuoteResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -541,8 +665,8 @@ _GETQUOTERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=825,
-  serialized_end=881,
+  serialized_start=1293,
+  serialized_end=1382,
 )
 
 
@@ -567,6 +691,13 @@ _SHIPORDERREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ShipOrderRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -579,8 +710,8 @@ _SHIPORDERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=883,
-  serialized_end=978,
+  serialized_start=1385,
+  serialized_end=1513,
 )
 
 
@@ -598,6 +729,13 @@ _SHIPORDERRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ShipOrderResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -610,8 +748,8 @@ _SHIPORDERRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=980,
-  serialized_end=1020,
+  serialized_start=1515,
+  serialized_end=1588,
 )
 
 
@@ -669,8 +807,39 @@ _ADDRESS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1022,
-  serialized_end=1119,
+  serialized_start=1590,
+  serialized_end=1687,
+)
+
+
+_GETSUPPORTEDCURRENCIESREQUEST = _descriptor.Descriptor(
+  name='GetSupportedCurrenciesRequest',
+  full_name='hipstershop.GetSupportedCurrenciesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.GetSupportedCurrenciesRequest.FI_Trace', index=0,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1689,
+  serialized_end=1753,
 )
 
 
@@ -714,8 +883,8 @@ _MONEY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1121,
-  serialized_end=1181,
+  serialized_start=1755,
+  serialized_end=1815,
 )
 
 
@@ -733,6 +902,13 @@ _GETSUPPORTEDCURRENCIESRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.GetSupportedCurrenciesResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -745,8 +921,8 @@ _GETSUPPORTEDCURRENCIESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1183,
-  serialized_end=1239,
+  serialized_start=1817,
+  serialized_end=1906,
 )
 
 
@@ -771,6 +947,13 @@ _CURRENCYCONVERSIONREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.CurrencyConversionRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -783,8 +966,8 @@ _CURRENCYCONVERSIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1241,
-  serialized_end=1319,
+  serialized_start=1908,
+  serialized_end=2019,
 )
 
 
@@ -835,8 +1018,8 @@ _CREDITCARDINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1322,
-  serialized_end=1466,
+  serialized_start=2022,
+  serialized_end=2166,
 )
 
 
@@ -861,6 +1044,13 @@ _CHARGEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ChargeRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -873,8 +1063,8 @@ _CHARGEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1468,
-  serialized_end=1569,
+  serialized_start=2169,
+  serialized_end=2303,
 )
 
 
@@ -892,6 +1082,13 @@ _CHARGERESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.ChargeResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -904,8 +1101,8 @@ _CHARGERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1571,
-  serialized_end=1611,
+  serialized_start=2305,
+  serialized_end=2378,
 )
 
 
@@ -942,8 +1139,8 @@ _ORDERITEM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1613,
-  serialized_end=1695,
+  serialized_start=2380,
+  serialized_end=2462,
 )
 
 
@@ -989,6 +1186,13 @@ _ORDERRESULT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.OrderResult.FI_Trace', index=5,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1001,8 +1205,8 @@ _ORDERRESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1698,
-  serialized_end=1889,
+  serialized_start=2465,
+  serialized_end=2689,
 )
 
 
@@ -1027,6 +1231,13 @@ _SENDORDERCONFIRMATIONREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.SendOrderConfirmationRequest.FI_Trace', index=2,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1039,8 +1250,8 @@ _SENDORDERCONFIRMATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1891,
-  serialized_end=1977,
+  serialized_start=2691,
+  serialized_end=2810,
 )
 
 
@@ -1086,6 +1297,13 @@ _PLACEORDERREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.PlaceOrderRequest.FI_Trace', index=5,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1098,8 +1316,8 @@ _PLACEORDERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1980,
-  serialized_end=2143,
+  serialized_start=2813,
+  serialized_end=3009,
 )
 
 
@@ -1117,6 +1335,13 @@ _PLACEORDERRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.PlaceOrderResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -1129,53 +1354,29 @@ _PLACEORDERRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2145,
-  serialized_end=2206,
+  serialized_start=3011,
+  serialized_end=3105,
 )
 
 
-_ADSREQUEST = _descriptor.Descriptor(
-  name='AdsRequest',
-  full_name='hipstershop.AdsRequest',
+_ADREQUEST = _descriptor.Descriptor(
+  name='AdRequest',
+  full_name='hipstershop.AdRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='context_keys', full_name='hipstershop.AdsRequest.context_keys', index=0,
+      name='context_keys', full_name='hipstershop.AdRequest.context_keys', index=0,
       number=1, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2208,
-  serialized_end=2242,
-)
-
-
-_ADSRESPONSE = _descriptor.Descriptor(
-  name='AdsResponse',
-  full_name='hipstershop.AdsResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
     _descriptor.FieldDescriptor(
-      name='ads', full_name='hipstershop.AdsResponse.ads', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='FI_Trace', full_name='hipstershop.AdRequest.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -1191,8 +1392,46 @@ _ADSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2244,
-  serialized_end=2287,
+  serialized_start=3107,
+  serialized_end=3173,
+)
+
+
+_ADRESPONSE = _descriptor.Descriptor(
+  name='AdResponse',
+  full_name='hipstershop.AdResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='ads', full_name='hipstershop.AdResponse.ads', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='FI_Trace', full_name='hipstershop.AdResponse.FI_Trace', index=1,
+      number=100, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3175,
+  serialized_end=3250,
 )
 
 
@@ -1229,33 +1468,60 @@ _AD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2289,
-  serialized_end=2329,
+  serialized_start=3252,
+  serialized_end=3292,
 )
 
 _ADDITEMREQUEST.fields_by_name['item'].message_type = _CARTITEM
+_ADDITEMREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_EMPTYCARTREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_GETCARTREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _CART.fields_by_name['items'].message_type = _CARTITEM
+_EMPTY.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_LISTRECOMMENDATIONSREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_LISTRECOMMENDATIONSRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_LISTPRODUCTSREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _PRODUCT.fields_by_name['price_usd'].message_type = _MONEY
+_PRODUCT.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _LISTPRODUCTSRESPONSE.fields_by_name['products'].message_type = _PRODUCT
+_LISTPRODUCTSRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_GETPRODUCTREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_SEARCHPRODUCTSREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _SEARCHPRODUCTSRESPONSE.fields_by_name['results'].message_type = _PRODUCT
+_SEARCHPRODUCTSRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _GETQUOTEREQUEST.fields_by_name['address'].message_type = _ADDRESS
 _GETQUOTEREQUEST.fields_by_name['items'].message_type = _CARTITEM
+_GETQUOTEREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _GETQUOTERESPONSE.fields_by_name['cost_usd'].message_type = _MONEY
+_GETQUOTERESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _SHIPORDERREQUEST.fields_by_name['address'].message_type = _ADDRESS
 _SHIPORDERREQUEST.fields_by_name['items'].message_type = _CARTITEM
+_SHIPORDERREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_SHIPORDERRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_GETSUPPORTEDCURRENCIESREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_GETSUPPORTEDCURRENCIESRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _CURRENCYCONVERSIONREQUEST.fields_by_name['from'].message_type = _MONEY
+_CURRENCYCONVERSIONREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _CHARGEREQUEST.fields_by_name['amount'].message_type = _MONEY
 _CHARGEREQUEST.fields_by_name['credit_card'].message_type = _CREDITCARDINFO
+_CHARGEREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_CHARGERESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _ORDERITEM.fields_by_name['item'].message_type = _CARTITEM
 _ORDERITEM.fields_by_name['cost'].message_type = _MONEY
 _ORDERRESULT.fields_by_name['shipping_cost'].message_type = _MONEY
 _ORDERRESULT.fields_by_name['shipping_address'].message_type = _ADDRESS
 _ORDERRESULT.fields_by_name['items'].message_type = _ORDERITEM
+_ORDERRESULT.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _SENDORDERCONFIRMATIONREQUEST.fields_by_name['order'].message_type = _ORDERRESULT
+_SENDORDERCONFIRMATIONREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _PLACEORDERREQUEST.fields_by_name['address'].message_type = _ADDRESS
 _PLACEORDERREQUEST.fields_by_name['credit_card'].message_type = _CREDITCARDINFO
+_PLACEORDERREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 _PLACEORDERRESPONSE.fields_by_name['order'].message_type = _ORDERRESULT
-_ADSRESPONSE.fields_by_name['ads'].message_type = _AD
+_PLACEORDERRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_ADREQUEST.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
+_ADRESPONSE.fields_by_name['ads'].message_type = _AD
+_ADRESPONSE.fields_by_name['FI_Trace'].message_type = message__pb2._TRACE
 DESCRIPTOR.message_types_by_name['CartItem'] = _CARTITEM
 DESCRIPTOR.message_types_by_name['AddItemRequest'] = _ADDITEMREQUEST
 DESCRIPTOR.message_types_by_name['EmptyCartRequest'] = _EMPTYCARTREQUEST
@@ -1264,6 +1530,7 @@ DESCRIPTOR.message_types_by_name['Cart'] = _CART
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 DESCRIPTOR.message_types_by_name['ListRecommendationsRequest'] = _LISTRECOMMENDATIONSREQUEST
 DESCRIPTOR.message_types_by_name['ListRecommendationsResponse'] = _LISTRECOMMENDATIONSRESPONSE
+DESCRIPTOR.message_types_by_name['ListProductsRequest'] = _LISTPRODUCTSREQUEST
 DESCRIPTOR.message_types_by_name['Product'] = _PRODUCT
 DESCRIPTOR.message_types_by_name['ListProductsResponse'] = _LISTPRODUCTSRESPONSE
 DESCRIPTOR.message_types_by_name['GetProductRequest'] = _GETPRODUCTREQUEST
@@ -1274,6 +1541,7 @@ DESCRIPTOR.message_types_by_name['GetQuoteResponse'] = _GETQUOTERESPONSE
 DESCRIPTOR.message_types_by_name['ShipOrderRequest'] = _SHIPORDERREQUEST
 DESCRIPTOR.message_types_by_name['ShipOrderResponse'] = _SHIPORDERRESPONSE
 DESCRIPTOR.message_types_by_name['Address'] = _ADDRESS
+DESCRIPTOR.message_types_by_name['GetSupportedCurrenciesRequest'] = _GETSUPPORTEDCURRENCIESREQUEST
 DESCRIPTOR.message_types_by_name['Money'] = _MONEY
 DESCRIPTOR.message_types_by_name['GetSupportedCurrenciesResponse'] = _GETSUPPORTEDCURRENCIESRESPONSE
 DESCRIPTOR.message_types_by_name['CurrencyConversionRequest'] = _CURRENCYCONVERSIONREQUEST
@@ -1285,8 +1553,8 @@ DESCRIPTOR.message_types_by_name['OrderResult'] = _ORDERRESULT
 DESCRIPTOR.message_types_by_name['SendOrderConfirmationRequest'] = _SENDORDERCONFIRMATIONREQUEST
 DESCRIPTOR.message_types_by_name['PlaceOrderRequest'] = _PLACEORDERREQUEST
 DESCRIPTOR.message_types_by_name['PlaceOrderResponse'] = _PLACEORDERRESPONSE
-DESCRIPTOR.message_types_by_name['AdsRequest'] = _ADSREQUEST
-DESCRIPTOR.message_types_by_name['AdsResponse'] = _ADSRESPONSE
+DESCRIPTOR.message_types_by_name['AdRequest'] = _ADREQUEST
+DESCRIPTOR.message_types_by_name['AdResponse'] = _ADRESPONSE
 DESCRIPTOR.message_types_by_name['Ad'] = _AD
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -1345,6 +1613,13 @@ ListRecommendationsResponse = _reflection.GeneratedProtocolMessageType('ListReco
   # @@protoc_insertion_point(class_scope:hipstershop.ListRecommendationsResponse)
   ))
 _sym_db.RegisterMessage(ListRecommendationsResponse)
+
+ListProductsRequest = _reflection.GeneratedProtocolMessageType('ListProductsRequest', (_message.Message,), dict(
+  DESCRIPTOR = _LISTPRODUCTSREQUEST,
+  __module__ = 'demo_pb2'
+  # @@protoc_insertion_point(class_scope:hipstershop.ListProductsRequest)
+  ))
+_sym_db.RegisterMessage(ListProductsRequest)
 
 Product = _reflection.GeneratedProtocolMessageType('Product', (_message.Message,), dict(
   DESCRIPTOR = _PRODUCT,
@@ -1415,6 +1690,13 @@ Address = _reflection.GeneratedProtocolMessageType('Address', (_message.Message,
   # @@protoc_insertion_point(class_scope:hipstershop.Address)
   ))
 _sym_db.RegisterMessage(Address)
+
+GetSupportedCurrenciesRequest = _reflection.GeneratedProtocolMessageType('GetSupportedCurrenciesRequest', (_message.Message,), dict(
+  DESCRIPTOR = _GETSUPPORTEDCURRENCIESREQUEST,
+  __module__ = 'demo_pb2'
+  # @@protoc_insertion_point(class_scope:hipstershop.GetSupportedCurrenciesRequest)
+  ))
+_sym_db.RegisterMessage(GetSupportedCurrenciesRequest)
 
 Money = _reflection.GeneratedProtocolMessageType('Money', (_message.Message,), dict(
   DESCRIPTOR = _MONEY,
@@ -1493,19 +1775,19 @@ PlaceOrderResponse = _reflection.GeneratedProtocolMessageType('PlaceOrderRespons
   ))
 _sym_db.RegisterMessage(PlaceOrderResponse)
 
-AdsRequest = _reflection.GeneratedProtocolMessageType('AdsRequest', (_message.Message,), dict(
-  DESCRIPTOR = _ADSREQUEST,
+AdRequest = _reflection.GeneratedProtocolMessageType('AdRequest', (_message.Message,), dict(
+  DESCRIPTOR = _ADREQUEST,
   __module__ = 'demo_pb2'
-  # @@protoc_insertion_point(class_scope:hipstershop.AdsRequest)
+  # @@protoc_insertion_point(class_scope:hipstershop.AdRequest)
   ))
-_sym_db.RegisterMessage(AdsRequest)
+_sym_db.RegisterMessage(AdRequest)
 
-AdsResponse = _reflection.GeneratedProtocolMessageType('AdsResponse', (_message.Message,), dict(
-  DESCRIPTOR = _ADSRESPONSE,
+AdResponse = _reflection.GeneratedProtocolMessageType('AdResponse', (_message.Message,), dict(
+  DESCRIPTOR = _ADRESPONSE,
   __module__ = 'demo_pb2'
-  # @@protoc_insertion_point(class_scope:hipstershop.AdsResponse)
+  # @@protoc_insertion_point(class_scope:hipstershop.AdResponse)
   ))
-_sym_db.RegisterMessage(AdsResponse)
+_sym_db.RegisterMessage(AdResponse)
 
 Ad = _reflection.GeneratedProtocolMessageType('Ad', (_message.Message,), dict(
   DESCRIPTOR = _AD,
@@ -1522,8 +1804,8 @@ _CARTSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=2332,
-  serialized_end=2534,
+  serialized_start=3295,
+  serialized_end=3497,
   methods=[
   _descriptor.MethodDescriptor(
     name='AddItem',
@@ -1564,8 +1846,8 @@ _RECOMMENDATIONSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   options=None,
-  serialized_start=2537,
-  serialized_end=2668,
+  serialized_start=3500,
+  serialized_end=3631,
   methods=[
   _descriptor.MethodDescriptor(
     name='ListRecommendations',
@@ -1588,15 +1870,15 @@ _PRODUCTCATALOGSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=2,
   options=None,
-  serialized_start=2671,
-  serialized_end=2930,
+  serialized_start=3634,
+  serialized_end=3907,
   methods=[
   _descriptor.MethodDescriptor(
     name='ListProducts',
     full_name='hipstershop.ProductCatalogService.ListProducts',
     index=0,
     containing_service=None,
-    input_type=_EMPTY,
+    input_type=_LISTPRODUCTSREQUEST,
     output_type=_LISTPRODUCTSRESPONSE,
     options=None,
   ),
@@ -1630,8 +1912,8 @@ _SHIPPINGSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=3,
   options=None,
-  serialized_start=2933,
-  serialized_end=3103,
+  serialized_start=3910,
+  serialized_end=4080,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetQuote',
@@ -1663,15 +1945,15 @@ _CURRENCYSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=4,
   options=None,
-  serialized_start=3106,
-  serialized_end=3289,
+  serialized_start=4083,
+  serialized_end=4290,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetSupportedCurrencies',
     full_name='hipstershop.CurrencyService.GetSupportedCurrencies',
     index=0,
     containing_service=None,
-    input_type=_EMPTY,
+    input_type=_GETSUPPORTEDCURRENCIESREQUEST,
     output_type=_GETSUPPORTEDCURRENCIESRESPONSE,
     options=None,
   ),
@@ -1696,8 +1978,8 @@ _PAYMENTSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=5,
   options=None,
-  serialized_start=3291,
-  serialized_end=3376,
+  serialized_start=4292,
+  serialized_end=4377,
   methods=[
   _descriptor.MethodDescriptor(
     name='Charge',
@@ -1720,8 +2002,8 @@ _EMAILSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=6,
   options=None,
-  serialized_start=3378,
-  serialized_end=3482,
+  serialized_start=4379,
+  serialized_end=4483,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendOrderConfirmation',
@@ -1744,8 +2026,8 @@ _CHECKOUTSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=7,
   options=None,
-  serialized_start=3484,
-  serialized_end=3582,
+  serialized_start=4485,
+  serialized_end=4583,
   methods=[
   _descriptor.MethodDescriptor(
     name='PlaceOrder',
@@ -1762,27 +2044,27 @@ _sym_db.RegisterServiceDescriptor(_CHECKOUTSERVICE)
 DESCRIPTOR.services_by_name['CheckoutService'] = _CHECKOUTSERVICE
 
 
-_ADSSERVICE = _descriptor.ServiceDescriptor(
-  name='AdsService',
-  full_name='hipstershop.AdsService',
+_ADSERVICE = _descriptor.ServiceDescriptor(
+  name='AdService',
+  full_name='hipstershop.AdService',
   file=DESCRIPTOR,
   index=8,
   options=None,
-  serialized_start=3584,
-  serialized_end=3659,
+  serialized_start=4585,
+  serialized_end=4657,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetAds',
-    full_name='hipstershop.AdsService.GetAds',
+    full_name='hipstershop.AdService.GetAds',
     index=0,
     containing_service=None,
-    input_type=_ADSREQUEST,
-    output_type=_ADSRESPONSE,
+    input_type=_ADREQUEST,
+    output_type=_ADRESPONSE,
     options=None,
   ),
 ])
-_sym_db.RegisterServiceDescriptor(_ADSSERVICE)
+_sym_db.RegisterServiceDescriptor(_ADSERVICE)
 
-DESCRIPTOR.services_by_name['AdsService'] = _ADSSERVICE
+DESCRIPTOR.services_by_name['AdService'] = _ADSERVICE
 
 # @@protoc_insertion_point(module_scope)

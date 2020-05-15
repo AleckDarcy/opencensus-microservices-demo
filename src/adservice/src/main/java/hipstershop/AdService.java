@@ -101,6 +101,11 @@ public class AdService {
      */
     @Override
     public void getAds(AdRequest req, StreamObserver<AdResponse> responseObserver) {
+//      StackTraceElement[] st = Thread.currentThread().getStackTrace();
+//      for (int i = 0; i < st.length; i++) {
+//        logger.info("[RELOAD] getAds, stacktrace " + i+ ", " + st[i].toString());
+//      }
+
       AdService service = AdService.getInstance();
       Span parentSpan = tracer.getCurrentSpan();
       SpanBuilder spanBuilder =

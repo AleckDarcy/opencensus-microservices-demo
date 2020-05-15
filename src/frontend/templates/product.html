@@ -48,6 +48,11 @@
                 {{ end }}
                 
                 {{ with $.ad }}{{ template "text_ad" . }}{{ end}}
+
+                {{ if $.fi_trace}}
+                    <hr/>
+                    {{ marshalTracing $.fi_trace }}
+                {{ end }}
             </div>
         </div>
     

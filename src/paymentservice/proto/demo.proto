@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package hipstershop;
+import "message.proto";
 
 // -----------------Cart service-----------------
 
@@ -18,14 +19,20 @@ message CartItem {
 message AddItemRequest {
     string user_id = 1;
     CartItem item = 2;
+
+    Trace FI_Trace = 100;
 }
 
 message EmptyCartRequest {
     string user_id = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message GetCartRequest {
     string user_id = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message Cart {
@@ -33,7 +40,9 @@ message Cart {
     repeated CartItem items = 2;
 }
 
-message Empty {}
+message Empty {
+    Trace FI_Trace = 100;
+}
 
 // ---------------Recommendation service----------
 
@@ -44,18 +53,26 @@ service RecommendationService {
 message ListRecommendationsRequest {
     string user_id = 1;
     repeated string product_ids = 2;
+
+    Trace FI_Trace = 100;
 }
 
 message ListRecommendationsResponse {
     repeated string product_ids = 1;
+
+    Trace FI_Trace = 100;
 }
 
 // ---------------Product Catalog----------------
 
 service ProductCatalogService {
-    rpc ListProducts(Empty) returns (ListProductsResponse) {}
+    rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {}
     rpc GetProduct(GetProductRequest) returns (Product) {}
     rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse) {}
+}
+
+message ListProductsRequest {
+    Trace FI_Trace = 100;
 }
 
 message Product {
@@ -64,22 +81,32 @@ message Product {
     string description = 3;
     string picture = 4;
     Money price_usd = 5;
+
+    Trace FI_Trace = 100;
 }
 
 message ListProductsResponse {
     repeated Product products = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message GetProductRequest {
     string id = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message SearchProductsRequest {
     string query = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message SearchProductsResponse {
     repeated Product results = 1;
+
+    Trace FI_Trace = 100;
 }
 
 // ---------------Shipping Service----------
@@ -92,19 +119,27 @@ service ShippingService {
 message GetQuoteRequest {
     Address address = 1;
     repeated CartItem items = 2;
+
+    Trace FI_Trace = 100;
 }
 
 message GetQuoteResponse {
     Money cost_usd = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message ShipOrderRequest {
     Address address = 1;
     repeated CartItem items = 2;
+
+    Trace FI_Trace = 100;
 }
 
 message ShipOrderResponse {
     string tracking_id = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message Address {
@@ -118,8 +153,12 @@ message Address {
 // -----------------Currency service-----------------
 
 service CurrencyService {
-    rpc GetSupportedCurrencies(Empty) returns (GetSupportedCurrenciesResponse) {}
+    rpc GetSupportedCurrencies(GetSupportedCurrenciesRequest) returns (GetSupportedCurrenciesResponse) {}
     rpc Convert(CurrencyConversionRequest) returns (Money) {}
+}
+
+message GetSupportedCurrenciesRequest {
+    Trace FI_Trace = 100;
 }
 
 // Represents an amount of money with its currency type.
@@ -143,6 +182,8 @@ message Money {
 message GetSupportedCurrenciesResponse {
     // The 3-letter currency code defined in ISO 4217.
     repeated string currency_codes = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message CurrencyConversionRequest {
@@ -150,6 +191,8 @@ message CurrencyConversionRequest {
 
     // The 3-letter currency code defined in ISO 4217.
     string to_code = 2;
+
+    Trace FI_Trace = 100;
 }
 
 // -------------Payment service-----------------
@@ -168,10 +211,14 @@ message CreditCardInfo {
 message ChargeRequest {
     Money amount = 1;
     CreditCardInfo credit_card = 2;
+
+    Trace FI_Trace = 100;
 }
 
 message ChargeResponse {
     string transaction_id = 1;
+
+    Trace FI_Trace = 100;
 }
 
 // -------------Email service-----------------
@@ -191,11 +238,15 @@ message OrderResult {
     Money shipping_cost = 3;
     Address  shipping_address = 4;
     repeated OrderItem items = 5;
+
+    Trace FI_Trace = 100;
 }
 
 message SendOrderConfirmationRequest {
     string email = 1;
     OrderResult order = 2;
+
+    Trace FI_Trace = 100;
 }
 
 
@@ -212,25 +263,33 @@ message PlaceOrderRequest {
     Address address = 3;
     string email = 5;
     CreditCardInfo credit_card = 6;
+
+    Trace FI_Trace = 100;
 }
 
 message PlaceOrderResponse {
     OrderResult order = 1;
+
+    Trace FI_Trace = 100;
 }
 
-// ------------Ads service------------------
+// ------------Ad service------------------
 
-service AdsService {
-    rpc GetAds(AdsRequest) returns (AdsResponse) {}
+service AdService {
+    rpc GetAds(AdRequest) returns (AdResponse) {}
 }
 
-message AdsRequest {
+message AdRequest {
     // List of important key words from the current page describing the context.
     repeated string context_keys = 1;
+
+    Trace FI_Trace = 100;
 }
 
-message AdsResponse {
+message AdResponse {
     repeated Ad ads = 1;
+
+    Trace FI_Trace = 100;
 }
 
 message Ad {

@@ -9,7 +9,13 @@ COPY package*.json ./
 
 RUN npm install --only=production
 
+RUN npm install sleep
+RUN npm install uuid
+
 COPY . .
+
+RUN rm -f node_modules/grpc/src/server.js
+COPY reload/grpc/src/server.js node_modules/grpc/src
 
 EXPOSE 50051
 

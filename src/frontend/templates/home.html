@@ -54,6 +54,11 @@
             <div class="row">
                 {{ with $.ad }}{{ template "text_ad" . }}{{ end}}
             </div>
+
+            {{ if $.fi_trace}}
+                <hr/>
+                {{ marshalTracing $.fi_trace }}
+            {{ end }}
             </div>
         </div>
     </main>

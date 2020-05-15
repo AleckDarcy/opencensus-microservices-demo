@@ -15,7 +15,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"html/template"
 	"math/rand"
@@ -24,6 +23,9 @@ import (
 	"strconv"
 	"time"
 
+	rLog "github.com/AleckDarcy/reload/core/log"
+	rHtml "github.com/AleckDarcy/reload/runtime/html"
+	rTemplate "github.com/AleckDarcy/reload/runtime/html/template"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -33,29 +35,45 @@ import (
 )
 
 var (
-	templates = template.Must(template.New("").
-		Funcs(template.FuncMap{
-			"renderMoney": renderMoney,
+	templates = rTemplate.Must(
+		template.New("").Funcs(template.FuncMap{
+			"renderMoney":    renderMoney,
+			"marshalTracing": rTemplate.MarshalTracing,
 		}).ParseGlob("templates/*.html"))
 )
 
 func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
+	// unavoidable modification since we need to assign threadID by calling context.WithValue
+	// we need to assign the new Context to replace the current one
+	r = rHtml.Init(r)
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.WithField("currency", currentCurrency(r)).Info("home")
+
+	useDefault := false
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
-		return
+		rLog.Logf("[RELOAD] homeHandler getCurrencies fail: %s", err)
+		// [RELOAD: FAULT TOLERANT] starts
+		currencies = []string{"USD"}
+		useDefault = true
+		//renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
+		//return
+		// [RELOAD: FAULT TOLERANT] ends
 	}
 	products, err := fe.getProducts(r.Context())
 	if err != nil {
+		// [RELOAD: FAULT TOLERANT] starts
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
 		return
+		// [RELOAD: FAULT TOLERANT] ends
 	}
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
+		// [RELOAD: FAULT TOLERANT] starts
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
 		return
+		// [RELOAD: FAULT TOLERANT] ends
 	}
 
 	type productView struct {
@@ -64,15 +82,36 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	ps := make([]productView, len(products))
 	for i, p := range products {
-		price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
-		if err != nil {
-			renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
-			return
+		// [RELOAD]
+		if i == 0 {
+			price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
+			if err != nil {
+				rLog.Logf("[RELOAD] homeHandler convertCurrency fail: %#v", err)
+				price = p.GetPriceUsd()
+				useDefault = true
+			}
+			ps[i] = productView{p, price}
+		} else {
+			if useDefault {
+				ps[i] = productView{p, p.GetPriceUsd()}
+			} else {
+				price, _ := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
+				ps[i] = productView{p, price}
+			}
 		}
-		ps[i] = productView{p, price}
+
+		// [RELOAD: FAULT TOLERANT] starts
+		//price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
+		//if err != nil {
+		//	rLog.Logf("[RELOAD] homeHandler convertCurrency fail: %#v", err)
+		//	renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
+		//	return
+		//}
+		//ps[i] = productView{p, price}
+		// [RELOAD: FAULT TOLERANT] ends
 	}
 
-	if err := templates.ExecuteTemplate(w, "home", map[string]interface{}{
+	if err := templates.ExecuteTemplateReload(r.Context(), w, "home", map[string]interface{}{
 		"session_id":    sessionID(r),
 		"request_id":    r.Context().Value(ctxKeyRequestID{}),
 		"user_currency": currentCurrency(r),
@@ -80,13 +119,17 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		"products":      ps,
 		"cart_size":     len(cart),
 		"banner_color":  os.Getenv("BANNER_COLOR"), // illustrates canary deployments
-		"ad":            fe.chooseAd(r.Context(), log),
+		"ad":            fe.chooseAd(r, log),
 	}); err != nil {
 		log.Error(err)
 	}
 }
 
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {
+	// unavoidable modification since we need to assign threadID by calling context.WithValue
+	// we need to assign the new Context to replace the current one
+	r = rHtml.Init(r)
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	id := mux.Vars(r)["id"]
 	if id == "" {
@@ -130,10 +173,11 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 		Price *pb.Money
 	}{p, price}
 
-	if err := templates.ExecuteTemplate(w, "product", map[string]interface{}{
+	// unavoidable modification since we cannot hack into runtime of Go-lang
+	if err := templates.ExecuteTemplateReload(r.Context(), w, "product", map[string]interface{}{
 		"session_id":      sessionID(r),
 		"request_id":      r.Context().Value(ctxKeyRequestID{}),
-		"ad":              fe.chooseAd(r.Context(), log),
+		"ad":              fe.chooseAd(r, log),
 		"user_currency":   currentCurrency(r),
 		"currencies":      currencies,
 		"product":         product,
@@ -145,6 +189,10 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Request) {
+	// unavoidable modification since we need to assign threadID by calling context.WithValue
+	// we need to assign the new Context to replace the current one
+	r = rHtml.Init(r)
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	quantity, _ := strconv.ParseUint(r.FormValue("quantity"), 10, 32)
 	productID := r.FormValue("product_id")
@@ -169,6 +217,10 @@ func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Request) {
+	// unavoidable modification since we need to assign threadID by calling context.WithValue
+	// we need to assign the new Context to replace the current one
+	r = rHtml.Init(r)
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("emptying cart")
 
@@ -181,6 +233,10 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request) {
+	// unavoidable modification since we need to assign threadID by calling context.WithValue
+	// we need to assign the new Context to replace the current one
+	r = rHtml.Init(r)
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("view user cart")
 	currencies, err := fe.getCurrencies(r.Context())
@@ -235,7 +291,7 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	totalPrice = money.Must(money.Sum(totalPrice, *shippingCost))
 
 	year := time.Now().Year()
-	if err := templates.ExecuteTemplate(w, "cart", map[string]interface{}{
+	if err := templates.ExecuteTemplateReload(r.Context(), w, "cart", map[string]interface{}{
 		"session_id":       sessionID(r),
 		"request_id":       r.Context().Value(ctxKeyRequestID{}),
 		"user_currency":    currentCurrency(r),
@@ -252,6 +308,10 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Request) {
+	// unavoidable modification since we need to assign threadID by calling context.WithValue
+	// we need to assign the new Context to replace the current one
+	r = rHtml.Init(r)
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("placing order")
 
@@ -299,7 +359,7 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 		totalPaid = money.Must(money.Sum(totalPaid, *v.GetCost()))
 	}
 
-	if err := templates.ExecuteTemplate(w, "order", map[string]interface{}{
+	if err := templates.ExecuteTemplateReload(r.Context(), w, "order", map[string]interface{}{
 		"session_id":      sessionID(r),
 		"request_id":      r.Context().Value(ctxKeyRequestID{}),
 		"user_currency":   currentCurrency(r),
@@ -346,11 +406,28 @@ func (fe *frontendServer) setCurrencyHandler(w http.ResponseWriter, r *http.Requ
 
 // chooseAd queries for advertisements available and randomly chooses one, if
 // available. It ignores the error retrieving the ad since it is not critical.
-func (fe *frontendServer) chooseAd(ctx context.Context, log logrus.FieldLogger) *pb.Ad {
+func (fe *frontendServer) chooseAd(r *http.Request, log logrus.FieldLogger) *pb.Ad {
+	ctx := r.Context()
+
 	ads, err := fe.getAd(ctx)
 	if err != nil {
 		log.WithField("error", err).Warn("failed to retrieve ads")
-		return nil
+
+		// [RELOAD]
+		m := &pb.Money{
+			CurrencyCode: "USD",
+			Units:        1,
+			Nanos:        2,
+		}
+
+		price, _ := fe.convertCurrency(ctx, m, currentCurrency(r))
+
+		defaultAd := &pb.Ad{
+			RedirectUrl: "https://www.google.com",
+			Text:        fmt.Sprintf("default product, price: %d %s", price.Units, currentCurrency(r)),
+		}
+
+		return defaultAd
 	}
 	return ads[rand.Intn(len(ads))]
 }
@@ -360,7 +437,7 @@ func renderHTTPError(log logrus.FieldLogger, r *http.Request, w http.ResponseWri
 	errMsg := fmt.Sprintf("%+v", err)
 
 	w.WriteHeader(code)
-	templates.ExecuteTemplate(w, "error", map[string]interface{}{
+	templates.ExecuteTemplateReload(r.Context(), w, "error", map[string]interface{}{
 		"session_id":  sessionID(r),
 		"request_id":  r.Context().Value(ctxKeyRequestID{}),
 		"error":       errMsg,
@@ -392,6 +469,6 @@ func cartIDs(c []*pb.CartItem) []string {
 	return out
 }
 
-func renderMoney(money pb.Money) string {
-	return fmt.Sprintf("%s %d.%02d", money.GetCurrencyCode(), money.GetUnits(), money.GetNanos()/10000000)
+func renderMoney(money *pb.Money) string {
+	return fmt.Sprintf("%s %d.%02d", money.CurrencyCode, money.Units, money.Nanos/10000000)
 }

@@ -139,7 +139,7 @@ class ProductCatalogServiceStub(object):
     """
     self.ListProducts = channel.unary_unary(
         '/hipstershop.ProductCatalogService/ListProducts',
-        request_serializer=demo__pb2.Empty.SerializeToString,
+        request_serializer=demo__pb2.ListProductsRequest.SerializeToString,
         response_deserializer=demo__pb2.ListProductsResponse.FromString,
         )
     self.GetProduct = channel.unary_unary(
@@ -185,7 +185,7 @@ def add_ProductCatalogServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'ListProducts': grpc.unary_unary_rpc_method_handler(
           servicer.ListProducts,
-          request_deserializer=demo__pb2.Empty.FromString,
+          request_deserializer=demo__pb2.ListProductsRequest.FromString,
           response_serializer=demo__pb2.ListProductsResponse.SerializeToString,
       ),
       'GetProduct': grpc.unary_unary_rpc_method_handler(
@@ -278,7 +278,7 @@ class CurrencyServiceStub(object):
     """
     self.GetSupportedCurrencies = channel.unary_unary(
         '/hipstershop.CurrencyService/GetSupportedCurrencies',
-        request_serializer=demo__pb2.Empty.SerializeToString,
+        request_serializer=demo__pb2.GetSupportedCurrenciesRequest.SerializeToString,
         response_deserializer=demo__pb2.GetSupportedCurrenciesResponse.FromString,
         )
     self.Convert = channel.unary_unary(
@@ -312,7 +312,7 @@ def add_CurrencyServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'GetSupportedCurrencies': grpc.unary_unary_rpc_method_handler(
           servicer.GetSupportedCurrencies,
-          request_deserializer=demo__pb2.Empty.FromString,
+          request_deserializer=demo__pb2.GetSupportedCurrenciesRequest.FromString,
           response_serializer=demo__pb2.GetSupportedCurrenciesResponse.SerializeToString,
       ),
       'Convert': grpc.unary_unary_rpc_method_handler(
@@ -458,8 +458,8 @@ def add_CheckoutServiceServicer_to_server(servicer, server):
   server.add_generic_rpc_handlers((generic_handler,))
 
 
-class AdsServiceStub(object):
-  """------------Ads service------------------
+class AdServiceStub(object):
+  """------------Ad service------------------
 
   """
 
@@ -470,14 +470,14 @@ class AdsServiceStub(object):
       channel: A grpc.Channel.
     """
     self.GetAds = channel.unary_unary(
-        '/hipstershop.AdsService/GetAds',
-        request_serializer=demo__pb2.AdsRequest.SerializeToString,
-        response_deserializer=demo__pb2.AdsResponse.FromString,
+        '/hipstershop.AdService/GetAds',
+        request_serializer=demo__pb2.AdRequest.SerializeToString,
+        response_deserializer=demo__pb2.AdResponse.FromString,
         )
 
 
-class AdsServiceServicer(object):
-  """------------Ads service------------------
+class AdServiceServicer(object):
+  """------------Ad service------------------
 
   """
 
@@ -489,14 +489,14 @@ class AdsServiceServicer(object):
     raise NotImplementedError('Method not implemented!')
 
 
-def add_AdsServiceServicer_to_server(servicer, server):
+def add_AdServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'GetAds': grpc.unary_unary_rpc_method_handler(
           servicer.GetAds,
-          request_deserializer=demo__pb2.AdsRequest.FromString,
-          response_serializer=demo__pb2.AdsResponse.SerializeToString,
+          request_deserializer=demo__pb2.AdRequest.FromString,
+          response_serializer=demo__pb2.AdResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'hipstershop.AdsService', rpc_method_handlers)
+      'hipstershop.AdService', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))

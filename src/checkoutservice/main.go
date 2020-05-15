@@ -38,6 +38,8 @@ import (
 	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/checkoutservice/genproto"
 	money "github.com/census-ecosystem/opencensus-microservices-demo/src/checkoutservice/money"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+
+	_ "github.com/AleckDarcy/reload"
 )
 
 const (
@@ -59,7 +61,7 @@ var stackdriverExporter view.Exporter
 func main() {
 	go initTracing()
 	go initProfiling("checkoutservice", "1.0.0")
-	go func () {
+	go func() {
 		initTracing()
 		initStats()
 	}()
@@ -130,7 +132,7 @@ func initStackDriverStatsExporter() {
 		var err error
 		stackdriverExporter, err = stackdriver.NewExporter(stackdriver.Options{})
 		if err != nil {
-			log.Print("error creating stackdriver exporter");
+			log.Print("error creating stackdriver exporter")
 			return
 		}
 	}
@@ -374,7 +376,8 @@ func (cs *checkoutService) convertCurrency(ctx context.Context, from *pb.Money, 
 		return nil, fmt.Errorf("could not connect currency service: %+v", err)
 	}
 	defer conn.Close()
-	result, err := pb.NewCurrencyServiceClient(conn).Convert(context.TODO(), &pb.CurrencyConversionRequest{
+	// todo: [RELOAD]
+	result, err := pb.NewCurrencyServiceClient(conn).Convert(ctx, &pb.CurrencyConversionRequest{
 		From:   from,
 		ToCode: toCurrency})
 	if err != nil {

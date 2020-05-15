@@ -7,8 +7,8 @@ ENV PROJECT github.com/census-ecosystem/opencensus-microservices-demo/src/checko
 WORKDIR /go/src/$PROJECT
 
 # restore dependencies
-COPY Gopkg.* ./
-RUN dep ensure --vendor-only -v
+#COPY Gopkg.* ./
+#RUN dep ensure --vendor-only -v
 
 COPY . .
 RUN go build -gcflags='-N -l' -o /checkoutservice .

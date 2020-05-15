@@ -14,6 +14,12 @@
                 </pre>
             </div>
         </div>
+        <div class="reload tracing data">
+            {{ if $.fi_trace}}
+                <hr/>
+                {{ marshalTracing $.fi_trace }}
+            {{ end }}
+        </div>
     </main>
 
     {{ template "footer" . }}
