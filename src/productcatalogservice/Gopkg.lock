@@ -34,6 +34,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:1b4c416c08e57f346010eeb8698105f0d81ce2242d7fd51a6ebdb5386ebdfab2"
+  name = "github.com/AleckDarcy/opencensus-microservices-demo"
+  packages = ["src/productcatalogservice/genproto"]
+  pruneopts = "T"
+  revision = "e805d8ae0ef5020fedb597f1dd4f4cdfd39b61b6"
+
+[[projects]]
+  branch = "master"
   digest = "1:a7ada101dd1c583cf3ba58705fbb464637e0c5852beefa900853cee601255909"
   name = "github.com/AleckDarcy/reload"
   packages = [
@@ -289,6 +297,7 @@
   input-imports = [
     "cloud.google.com/go/profiler",
     "contrib.go.opencensus.io/exporter/stackdriver",
+    "github.com/AleckDarcy/opencensus-microservices-demo/src/productcatalogservice/genproto",
     "github.com/AleckDarcy/reload",
     "github.com/AleckDarcy/reload/core/tracer",
     "github.com/golang/protobuf/jsonpb",

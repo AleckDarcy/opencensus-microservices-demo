@@ -34,10 +34,22 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4f64477035ff1b3c6553b296aab09a7dc3f43cbaf05ab8475e6b4158cc225449"
+  digest = "1:9a54ed615d82a4934cefd25525b2bfadf7d6cbc5e7949fb9f03eb8a71cbc8a3e"
+  name = "github.com/AleckDarcy/opencensus-microservices-demo"
+  packages = [
+    "src/frontend/genproto",
+    "src/frontend/money",
+  ]
+  pruneopts = "UT"
+  revision = "e805d8ae0ef5020fedb597f1dd4f4cdfd39b61b6"
+
+[[projects]]
+  branch = "master"
+  digest = "1:996de07c23cdd66ba33eacc61caf7ba3b1daf7631a96359687a18636959d8a70"
   name = "github.com/AleckDarcy/reload"
   packages = [
     "core/errors",
+    "core/log",
     "core/tracer",
     "runtime/html",
     "runtime/html/template",
@@ -395,6 +407,9 @@
   input-imports = [
     "cloud.google.com/go/profiler",
     "contrib.go.opencensus.io/exporter/stackdriver",
+    "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto",
+    "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/money",
+    "github.com/AleckDarcy/reload/core/log",
     "github.com/AleckDarcy/reload/core/tracer",
     "github.com/AleckDarcy/reload/runtime/html",
     "github.com/AleckDarcy/reload/runtime/html/template",

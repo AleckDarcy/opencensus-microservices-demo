@@ -53,6 +53,12 @@
                     <hr/>
                     {{ marshalTracing $.fi_trace }}
                 {{ end }}
+
+                {{ if $.fi_trace}}
+                    <div class="trace">
+                        {{ marshalTracing $.fi_trace }}
+                    </div>
+                {{ end }}
             </div>
         </div>
     
