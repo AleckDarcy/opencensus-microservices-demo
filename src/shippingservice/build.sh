@@ -1,4 +1,13 @@
+TMPPath=$GOPATH
+
+export GOPATH=$(pwd)/../..
+
+echo $GOPATH
+
 dep ensure
+
+export GOPATH=$TMPPath
+echo $GOPATH
 
 rm -rf vendor/google.golang.org/grpc
 rm -rf vendor/github.com/AleckDarcy/reload
