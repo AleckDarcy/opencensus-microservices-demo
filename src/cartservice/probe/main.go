@@ -20,7 +20,7 @@ import (
 	"os"
 	"time"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/cartservice/probe/genproto"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/cartservice/probe/genproto"
 
 	"google.golang.org/grpc"
 )

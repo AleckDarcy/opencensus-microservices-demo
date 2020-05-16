@@ -19,7 +19,7 @@ import (
 	"reflect"
 	"testing"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/frontend/genproto"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
 )
 
 func mmc(u int64, n int32, c string) pb.Money { return pb.Money{Units: u, Nanos: n, CurrencyCode: c} }

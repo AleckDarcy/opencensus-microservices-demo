@@ -30,8 +30,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/frontend/genproto"
-	"github.com/census-ecosystem/opencensus-microservices-demo/src/frontend/money"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
+	"github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/money"
 )
 
 var (

@@ -27,7 +27,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/productcatalogservice/genproto"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/productcatalogservice/genproto"
 )
 
 func TestServer(t *testing.T) {

@@ -20,7 +20,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/frontend/genproto"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
 )
 
 const (

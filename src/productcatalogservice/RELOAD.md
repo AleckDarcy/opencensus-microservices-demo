@@ -2,7 +2,7 @@
 Repositories:
 ```shell
 git clone https://github.com/AleckDarcy/reload.git
-git clone https://github.com/census-ecosystem/opencensus-microservices-demo.git
+git clone https://github.com/AleckDarcy/opencensus-microservices-demo.git
 ```
 Install go dep:
 ```shell

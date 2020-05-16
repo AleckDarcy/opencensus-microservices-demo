@@ -27,7 +27,7 @@ import (
 	"google.golang.org/grpc"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/shippingservice/genproto"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/shippingservice/genproto"
 )
 
 // TestGetQuote is a basic check on the GetQuote RPC service.

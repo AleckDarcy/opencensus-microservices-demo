@@ -17,7 +17,7 @@ package money
 import (
 	"errors"
 
-	pb "github.com/census-ecosystem/opencensus-microservices-demo/src/checkoutservice/genproto"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/checkoutservice/genproto"
 )
 
 const (
