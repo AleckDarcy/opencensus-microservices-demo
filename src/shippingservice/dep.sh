@@ -1,3 +1,0 @@
-dep ensure
-
-./reload.sh

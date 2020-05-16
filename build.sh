@@ -1,31 +1,22 @@
-cd src/checkoutservice
-pwd
-#./dep.sh
-#echo dep ok
-./build.sh
-echo build ready
-cd ../..
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 
-cd src/frontend
-pwd
-#./dep.sh
-#echo dep ok
-./build.sh
-echo build ready
-cd ../..
+services=(
+    "adservice"
+    "checkoutservice"
+    "currencyservice"
+    "emailservice"
+    "frontend"
+    "paymentservice"
+    "productcatalogservice"
+    "shippingservice"
+)
 
-cd src/productcatalogservice
-pwd
-#./dep.sh
-#echo dep ok
-./build.sh
-echo build ready
-cd ../..
+for ((i=0;i<${#services[@]};i++)) do
+  cd src/${services[i]};
 
-cd src/shippingservice
-pwd
-#./dep.sh
-#echo dep ok
-./build.sh
-echo build ready
-cd ../..
+  pwd
+  ./build.sh
+  echo "done"
+
+  cd ../..
+done;

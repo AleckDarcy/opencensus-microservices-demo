@@ -1,0 +1,1 @@
+cp $GOPATH/src/github.com/AleckDarcy/reload/reload/node/grpc/src/server.js reload/grpc/src/server.js
