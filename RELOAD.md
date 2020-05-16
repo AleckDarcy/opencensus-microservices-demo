@@ -8,7 +8,7 @@ If you already have gradle caches like *~/.gradle/caches/modules-2/files-2.1*, s
 
 Inside folder *opencensus-microservices-demo/src/adservice*, execute:
 ```shell
-./gradlew installDist
+./gradlew downloadRepos
 ```
 
 ## Generate GRPC for Java
