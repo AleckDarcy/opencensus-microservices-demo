@@ -1,60 +1,22 @@
-#Step 1: Replace reloaded code
+# Prepare
 
-Directory tree of this archive:
+## Versions
+Java: 1.8
 
+## Initialize Gradle cache for Java
+If you already have gradle caches like *~/.gradle/caches/modules-2/files-2.1*, skip this step.
+
+Inside folder *opencensus-microservices-demo/src/adservice*, execute:
+```shell
+./gradlew installDist
 ```
-ROOT
- |-- src
- |    |-- checkoutservice
- |    |    |-- genproto
- |    |    |    |-- demo.pb.go
- |    |    |    |-- demo.pb.reload.go (+)
- |    |    |-- Dockerfile
- |    |    |-- Gopkg.toml
- |    |    |-- main.go
- |    |-- frontend
- |    |    |-- genproto
- |    |    |    |-- demo.pb.go
- |    |    |    |-- demo.pb.reload.go (+)
- |    |    |-- Dockerfile
- |    |    |-- Gopkg.toml
- |    |    |-- handlers.go
- |    |-- productcatalogservice
- |    |    |-- genproto
- |    |    |    |-- demo.pb.go
- |    |    |    |-- demo.pb.reload.go (+)
- |    |    |-- Dockerfile
- |    |    |-- Gopkg.toml
- |    |    |-- server.go
- |    |-- shippingservice
- |         |-- genproto
- |         |    |-- demo.pb.go
- |         |    |-- demo.pb.reload.go (+)
- |         |-- Dockerfile
- |         |-- Gopkg.toml
- |         |-- server.go
- |-- reload
- |    |-- build.sh
- |    |-- dep.sh
- |    |-- genproto.sh
- |    |-- reload.sh
- |-- build.sh
-```
-1. Replace the original files under **src** with the files above, (files following with **(+)** are newly added).
-2. Copy **.sh** files under **reload** to each service.
-3. Delete **vendor** in **.dockerignore** for each service.
-4. Execute **build.sh** to manage dependencies.
-5. If you want to regenerate **.proto** file, execute **genproto.sh**.
 
-# Step 2: Launch the services
+## Generate GRPC for Java
+Clone code from *https://github.com/AleckDarcy/reload.git*, branch: feature/multi_threads.
+Replace **.jar** files under **~/.gradle/caches** (~/.gradle/caches/modules-2/files-2.1/io.grpc/grpc-core/1.12.0/541a5c68ce85c03190e29bc9e0ec611d2b75ff24/grpc-core-1.12.0.jar & ~/.gradle/caches/modules-2/files-2.1/io.grpc/grpc-stub/1.12.0/fbd2bafe09a89442ab3d7a8d8b3e8bafbd59b4e0/grpc-stub-1.12.0.jar) by .jar files under *reload/java/grpc*.
 
+# Run
 Execute:
-
 ```shell
 skaffold dev
 ```
-
-#Step 3: Use client collect tracing data
-
-1. Download code from: https://github.com/AleckDarcy/reload.git.
-2. Run test case in **reload/core/client/core/client_test.go**.
