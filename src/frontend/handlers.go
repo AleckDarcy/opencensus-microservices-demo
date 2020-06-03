@@ -63,16 +63,18 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	products, err := fe.getProducts(r.Context())
 	if err != nil {
+		rLog.Logf("[RELOAD] homeHandler getProducts fail: %s", err)
 		// [RELOAD: FAULT TOLERANT] starts
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
-		return
+		//renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
+		//return
 		// [RELOAD: FAULT TOLERANT] ends
 	}
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
+		rLog.Logf("[RELOAD] homeHandler getCart fail: %s", err)
 		// [RELOAD: FAULT TOLERANT] starts
-		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
-		return
+		//renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
+		//return
 		// [RELOAD: FAULT TOLERANT] ends
 	}
 
@@ -414,13 +416,15 @@ func (fe *frontendServer) chooseAd(r *http.Request, log logrus.FieldLogger) *pb.
 		log.WithField("error", err).Warn("failed to retrieve ads")
 
 		// [RELOAD]
-		m := &pb.Money{
+		price := &pb.Money{
 			CurrencyCode: "USD",
 			Units:        1,
-			Nanos:        2,
+			Nanos:        0,
 		}
 
-		price, _ := fe.convertCurrency(ctx, m, currentCurrency(r))
+		//if !useDefault {
+			price, _ = fe.convertCurrency(ctx, price, currentCurrency(r))
+		//}
 
 		defaultAd := &pb.Ad{
 			RedirectUrl: "https://www.google.com",
