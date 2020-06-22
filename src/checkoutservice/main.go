@@ -58,7 +58,10 @@ type checkoutService struct {
 
 var stackdriverExporter view.Exporter
 
+var jaegerOn string
+
 func main() {
+	mustMapEnv(&jaegerOn, "JAEGER_ON")
 	go initTracing()
 	go initProfiling("checkoutservice", "1.0.0")
 	go func() {
@@ -154,6 +157,10 @@ func initStats() {
 }
 
 func initTracing() {
+	if jaegerOn == "false" {
+		return
+	}
+
 	// This is a demo app with low QPS. trace.AlwaysSample() is used here
 	// to make sure traces are available for observation and analysis.
 	// In a production environment or high QPS setup please use

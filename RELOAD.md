@@ -20,3 +20,45 @@ Execute:
 ```shell
 skaffold dev
 ```
+
+
+# GKE
+
+## Deploy
+export PROJECT_ID=midyear-guild-279204
+
+export CLUSTER_NAME=cluster-1
+
+export CLUSTER_NAME=cluster-2
+
+gcloud auth login
+
+gcloud config set project $PROJECT_ID
+
+gcloud container clusters get-credentials $CLUSTER_NAME --zone us-west1-b --project $PROJECT_ID
+
+// gcloud container clusters resize $CLUSTER_NAME --zone=us-west1-b --num-nodes=8
+
+gcloud services enable container.googleapis.com
+
+gcloud services enable containerregistry.googleapis.com
+
+gcloud auth configure-docker -q
+
+kubectl get service frontend-external
+
+## Quit
+
+gcloud container clusters resize $CLUSTER_NAME --zone=us-west1-b --num-nodes=0
+
+gcloud services disable containerregistry.googleapis.com
+
+gcloud services disable container.googleapis.com
+
+gcloud config unset project
+
+gcloud auth revoke --all
+
+## Delete Image
+
+gcloud container images delete [HOSTNAME]/[PROJECT-ID]/[IMAGE]@[IMAGE_DIGEST]

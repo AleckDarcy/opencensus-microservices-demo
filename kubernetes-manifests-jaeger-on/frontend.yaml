@@ -62,7 +62,7 @@ spec:
           - name: AD_SERVICE_ADDR
             value: "adservice:9555"
           - name: JAEGER_ON
-            value: "false"
+            value: "true"
           resources:
             requests:
               cpu: 100m

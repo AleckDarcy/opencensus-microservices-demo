@@ -5,16 +5,13 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.1.0-alpha.1 && \
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-RUN npm install --only=production
-
-RUN npm install sleep
-RUN npm install uuid
-
 COPY . .
 
-RUN rm -f node_modules/grpc/src/server.js
+RUN npm install --only=production && \
+    npm install sleep && \
+    npm install uuid && \
+    rm -f node_modules/grpc/src/server.js
+
 COPY reload/grpc/src/server.js node_modules/grpc/src
 
 EXPOSE 50051

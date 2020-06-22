@@ -25,7 +25,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/opencensus-microservices-demo/productcatalogservice
+        image: gcr.io/midyear-guild-279204/productcatalogservice
         ports:
         - containerPort: 3550
         readinessProbe:
@@ -34,6 +34,9 @@ spec:
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:3550"]
+        env:
+        - name: JAEGER_ON
+          value: "false"
         resources:
           requests:
             cpu: 100m

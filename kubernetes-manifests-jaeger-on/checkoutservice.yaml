@@ -15,54 +15,39 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: frontend
+  name: checkoutservice
 spec:
   template:
     metadata:
       labels:
-        app: frontend
+        app: checkoutservice
     spec:
       containers:
         - name: server
-          image: gcr.io/midyear-guild-279204/frontend
+          image: gcr.io/midyear-guild-279204/checkoutservice
           ports:
-          - containerPort: 8080
-            name: frontend
-          - containerPort: 9090
-            name: metrics
+          - containerPort: 5050
           readinessProbe:
-            initialDelaySeconds: 10
-            httpGet:
-              path: "/_healthz"
-              port: 8080
-              httpHeaders:
-              - name: "Cookie"
-                value: "shop_session-id=x-readiness-probe"
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:5050"]
           livenessProbe:
-            initialDelaySeconds: 10
-            httpGet:
-              path: "/"
-              port: 8080
-              httpHeaders:
-              - name: "Cookie"
-                value: "shop_session-id=x-liveness-probe"
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:5050"]
           env:
           - name: PRODUCT_CATALOG_SERVICE_ADDR
             value: "productcatalogservice:3550"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: PAYMENT_SERVICE_ADDR
+            value: "paymentservice:50051"
+          - name: EMAIL_SERVICE_ADDR
+            value: "emailservice:5000"
           - name: CURRENCY_SERVICE_ADDR
             value: "currencyservice:7000"
           - name: CART_SERVICE_ADDR
             value: "cartservice:7070"
-          - name: RECOMMENDATION_SERVICE_ADDR
-            value: "recommendationservice:8080"
-          - name: SHIPPING_SERVICE_ADDR
-            value: "shippingservice:50051"
-          - name: CHECKOUT_SERVICE_ADDR
-            value: "checkoutservice:5050"
-          - name: AD_SERVICE_ADDR
-            value: "adservice:9555"
           - name: JAEGER_ON
-            value: "false"
+            value: "true"
           resources:
             requests:
               cpu: 100m
@@ -74,28 +59,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: checkoutservice
 spec:
   type: ClusterIP
   selector:
-    app: frontend
+    app: checkoutservice
   ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-  - name: metrics
-    port: 9090
-    targetPort: 9090
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-external
-spec:
-  type: LoadBalancer
-  selector:
-    app: frontend
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
+  - name: grpc
+    port: 5050
+    targetPort: 5050

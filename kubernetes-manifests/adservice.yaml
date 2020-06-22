@@ -25,7 +25,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/opencensus-microservices-demo/adservice
+        image: gcr.io/midyear-guild-279204/adservice
         ports:
         - containerPort: 9555
           name: adservice
@@ -34,6 +34,8 @@ spec:
         env:
         - name: PORT
           value: "9555"
+        - name: JAEGER_ON
+          value: "false"
         resources:
           requests:
             cpu: 200m

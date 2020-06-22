@@ -15,42 +15,57 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: paymentservice
+  name: adservice
 spec:
   template:
     metadata:
       labels:
-        app: paymentservice
+        app: adservice
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/midyear-guild-279204/paymentservice
+        image: gcr.io/midyear-guild-279204/adservice
         ports:
-        - containerPort: 50051
-        readinessProbe:
-          exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
-        livenessProbe:
-          exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        - containerPort: 9555
+          name: adservice
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: PORT
+          value: "9555"
+        - name: JAEGER_ON
+          value: "true"
         resources:
           requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
             cpu: 200m
-            memory: 128Mi
+            memory: 180Mi
+          limits:
+            cpu: 300m
+            memory: 300Mi
+        readinessProbe:
+          tcpSocket:
+            port: 9555
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 9555
+          initialDelaySeconds: 10
+          periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: paymentservice
+  name: adservice
 spec:
   type: ClusterIP
   selector:
-    app: paymentservice
+    app: adservice
   ports:
   - name: grpc
-    port: 50051
-    targetPort: 50051
+    port: 9555
+    targetPort: 9555
+  - name: metrics
+    port: 9090
+    targetPort: 9090

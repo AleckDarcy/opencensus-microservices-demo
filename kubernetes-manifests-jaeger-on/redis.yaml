@@ -15,42 +15,49 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: paymentservice
+  name: redis-cart
 spec:
   template:
     metadata:
       labels:
-        app: paymentservice
+        app: redis-cart
     spec:
-      terminationGracePeriodSeconds: 5
       containers:
-      - name: server
-        image: gcr.io/midyear-guild-279204/paymentservice
+      - name: redis
+        image: redis:alpine
         ports:
-        - containerPort: 50051
+        - containerPort: 6379
         readinessProbe:
-          exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
         livenessProbe:
-          exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          periodSeconds: 5
+          tcpSocket:
+            port: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
         resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            memory: 256Mi
+            cpu: 125m
+          requests:
+            cpu: 70m
+            memory: 200Mi
+      volumes:
+      - name: redis-data
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: paymentservice
+  name: redis-cart
 spec:
   type: ClusterIP
   selector:
-    app: paymentservice
+    app: redis-cart
   ports:
-  - name: grpc
-    port: 50051
-    targetPort: 50051
+  - name: redis
+    port: 6379
+    targetPort: 6379

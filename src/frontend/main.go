@@ -83,11 +83,15 @@ type frontendServer struct {
 
 var stackdriverExporter view.Exporter
 
+var jaegerOn string
+
 func main() {
 	ctx := context.Background()
 	log := logrus.New()
 	log.Level = logrus.DebugLevel
 	log.Formatter = &logrus.TextFormatter{}
+
+	mustMapEnv(&jaegerOn, "JAEGER_ON")
 
 	go initProfiling(log, "frontend", "1.0.0")
 	go func(log logrus.FieldLogger) {
@@ -142,7 +146,6 @@ func main() {
 }
 
 func initJaegerTracing(log logrus.FieldLogger) {
-
 	// Register the Jaeger exporter to be able to retrieve
 	// the collected spans.
 	exporter, err := jaeger.NewExporter(jaeger.Options{
@@ -209,6 +212,10 @@ func initStats(log logrus.FieldLogger) {
 }
 
 func initTracing(log logrus.FieldLogger) {
+	if jaegerOn == "false" {
+		return
+	}
+
 	// This is a demo app with low QPS. trace.AlwaysSample() is used here
 	// to make sure traces are available for observation and analysis.
 	// In a production environment or high QPS setup please use

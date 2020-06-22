@@ -22,6 +22,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"os"
 	"strings"
 	"time"
 
@@ -57,7 +58,11 @@ func init() {
 	log.Printf("successfully parsed product catalog json")
 }
 
+var jaegerOn string
+
 func main() {
+	mustMapEnv(&jaegerOn, "JAEGER_ON")
+
 	go initTracing()
 	go initProfiling("productcatalogservice", "1.0.0")
 	flag.Parse()
@@ -106,6 +111,10 @@ func initStats(exporter *stackdriver.Exporter) {
 }
 
 func initTracing() {
+	if jaegerOn == "false" {
+		return
+	}
+
 	// This is a demo app with low QPS. trace.AlwaysSample() is used here
 	// to make sure traces are available for observation and analysis.
 	// In a production environment or high QPS setup please use
@@ -156,6 +165,14 @@ func initProfiling(service, version string) {
 		time.Sleep(d)
 	}
 	log.Printf("warning: could not initialize stackdriver profiler after retrying, giving up")
+}
+
+func mustMapEnv(target *string, envKey string) {
+	v := os.Getenv(envKey)
+	if v == "" {
+		panic(fmt.Sprintf("environment variable %q not set", envKey))
+	}
+	*target = v
 }
 
 type productCatalog struct{}

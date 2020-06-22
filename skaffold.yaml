@@ -18,33 +18,33 @@ build:
   tagPolicy:
     gitCommit: {}
   artifacts:
-  - imageName: gcr.io/opencensus-microservices-demo/emailservice
+  - imageName: gcr.io/midyear-guild-279204/emailservice
     workspace: src/emailservice
-  - imageName: gcr.io/opencensus-microservices-demo/productcatalogservice
+  - imageName: gcr.io/midyear-guild-279204/productcatalogservice
     workspace: src/productcatalogservice
-  - imageName: gcr.io/opencensus-microservices-demo/recommendationservice
+  - imageName: gcr.io/midyear-guild-279204/recommendationservice
     workspace: src/recommendationservice
-  - imageName: gcr.io/opencensus-microservices-demo/shippingservice
+  - imageName: gcr.io/midyear-guild-279204/shippingservice
     workspace: src/shippingservice
-  - imageName: gcr.io/opencensus-microservices-demo/checkoutservice
+  - imageName: gcr.io/midyear-guild-279204/checkoutservice
     workspace: src/checkoutservice
-  - imageName: gcr.io/opencensus-microservices-demo/paymentservice
+  - imageName: gcr.io/midyear-guild-279204/paymentservice
     workspace: src/paymentservice
-  - imageName: gcr.io/opencensus-microservices-demo/currencyservice
+  - imageName: gcr.io/midyear-guild-279204/currencyservice
     workspace: src/currencyservice
-  - imageName: gcr.io/opencensus-microservices-demo/cartservice
+  - imageName: gcr.io/midyear-guild-279204/cartservice
     workspace: src/cartservice
-  - imageName: gcr.io/opencensus-microservices-demo/frontend
+  - imageName: gcr.io/midyear-guild-279204/frontend
     workspace: src/frontend
-  # - imageName: gcr.io/opencensus-microservices-demo/loadgenerator
-  #  workspace: src/loadgenerator
-  - imageName: gcr.io/opencensus-microservices-demo/adservice
+  - imageName: gcr.io/midyear-guild-279204/loadgenerator
+    workspace: src/loadgenerator
+  - imageName: gcr.io/midyear-guild-279204/adservice
     workspace: src/adservice
-  - imageName: gcr.io/opencensus-microservices-demo/grafana
+  - imageName: gcr.io/midyear-guild-279204/grafana
     workspace: src/grafana
-  - imageName: gcr.io/opencensus-microservices-demo/prometheus
+  - imageName: gcr.io/midyear-guild-279204/prometheus
     workspace: src/prometheus
-  - imageName: gcr.io/opencensus-microservices-demo/jaeger
+  - imageName: gcr.io/midyear-guild-279204/jaeger
     workspace: src/jaeger
 deploy:
   kubectl:
@@ -53,6 +53,12 @@ deploy:
     
 
 profiles:
+  # skaffold run -p jaeger-on
+  - name: jaeger-on
+    deploy:
+      kubectl:
+        manifests:
+          - ./kubernetes-manifests-jaeger-on/**.yaml
   # "travis-ci" profile is used to build the images without
   # pushing them.
   - name: travis-ci

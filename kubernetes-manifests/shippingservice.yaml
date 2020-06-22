@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: gcr.io/opencensus-microservices-demo/shippingservice
+        image: gcr.io/midyear-guild-279204/shippingservice
         ports:
         - containerPort: 50051
         readinessProbe:
@@ -34,6 +34,9 @@ spec:
         livenessProbe:
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        env:
+        - name: JAEGER_ON
+          value: "false"
         resources:
           requests:
             cpu: 100m

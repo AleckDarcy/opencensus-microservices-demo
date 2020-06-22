@@ -15,25 +15,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: paymentservice
+  name: productcatalogservice
 spec:
   template:
     metadata:
       labels:
-        app: paymentservice
+        app: productcatalogservice
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/midyear-guild-279204/paymentservice
+        image: gcr.io/midyear-guild-279204/productcatalogservice
         ports:
-        - containerPort: 50051
+        - containerPort: 3550
         readinessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            command: ["/bin/grpc_health_probe", "-addr=:3550"]
         livenessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            command: ["/bin/grpc_health_probe", "-addr=:3550"]
+        env:
+        - name: JAEGER_ON
+          value: "true"
         resources:
           requests:
             cpu: 100m
@@ -45,12 +48,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: paymentservice
+  name: productcatalogservice
 spec:
   type: ClusterIP
   selector:
-    app: paymentservice
+    app: productcatalogservice
   ports:
   - name: grpc
-    port: 50051
-    targetPort: 50051
+    port: 3550
+    targetPort: 3550

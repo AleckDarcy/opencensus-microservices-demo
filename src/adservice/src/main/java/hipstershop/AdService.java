@@ -57,6 +57,8 @@ public class AdService {
 
   private static final Tracer tracer = Tracing.getTracer();
 
+  private static boolean JAEGER_ON = Boolean.parseBoolean(System.getenv("JAEGER_ON"));
+
   private int MAX_ADS_TO_SERVE = 2;
   private Server server;
   private HealthStatusManager healthMgr;
@@ -106,47 +108,75 @@ public class AdService {
 //        logger.info("[RELOAD] getAds, stacktrace " + i+ ", " + st[i].toString());
 //      }
 
-      AdService service = AdService.getInstance();
-      Span parentSpan = tracer.getCurrentSpan();
-      SpanBuilder spanBuilder =
-          tracer
-              .spanBuilderWithExplicitParent("Retrieve Ads", parentSpan)
-              .setRecordEvents(true)
-              .setSampler(Samplers.alwaysSample());
-      try (Scope scope = spanBuilder.startScopedSpan()) {
-        Span span = tracer.getCurrentSpan();
-        span.putAttribute("method", AttributeValue.stringAttributeValue("getAds"));
-        List<Ad> ads = new ArrayList<>();
-        logger.info("received ad request (context_words=" + req.getContextKeysCount() + ")");
-        if (req.getContextKeysCount() > 0) {
-          span.addAnnotation(
-              "Constructing Ads using context",
-              ImmutableMap.of(
-                  "Context Keys",
-                  AttributeValue.stringAttributeValue(req.getContextKeysList().toString()),
-                  "Context Keys length",
-                  AttributeValue.longAttributeValue(req.getContextKeysCount())));
-          for (int i = 0; i < req.getContextKeysCount(); i++) {
-            Ad ad = service.getAdsByKey(req.getContextKeys(i));
-            if (ad != null) {
-              ads.add(ad);
+      if (JAEGER_ON) {
+          AdService service = AdService.getInstance();
+          Span parentSpan = tracer.getCurrentSpan();
+          SpanBuilder spanBuilder =
+              tracer
+                  .spanBuilderWithExplicitParent("Retrieve Ads", parentSpan)
+                  .setRecordEvents(true)
+                  .setSampler(Samplers.alwaysSample());
+          try (Scope scope = spanBuilder.startScopedSpan()) {
+            Span span = tracer.getCurrentSpan();
+            span.putAttribute("method", AttributeValue.stringAttributeValue("getAds"));
+            List<Ad> ads = new ArrayList<>();
+            logger.info("received ad request (context_words=" + req.getContextKeysCount() + ")");
+            if (req.getContextKeysCount() > 0) {
+              span.addAnnotation(
+                  "Constructing Ads using context",
+                  ImmutableMap.of(
+                      "Context Keys",
+                      AttributeValue.stringAttributeValue(req.getContextKeysList().toString()),
+                      "Context Keys length",
+                      AttributeValue.longAttributeValue(req.getContextKeysCount())));
+              for (int i = 0; i < req.getContextKeysCount(); i++) {
+                Ad ad = service.getAdsByKey(req.getContextKeys(i));
+                if (ad != null) {
+                  ads.add(ad);
+                }
+              }
+            } else {
+              span.addAnnotation("No Context provided. Constructing random Ads.");
+              ads = service.getDefaultAds();
             }
+            if (ads.isEmpty()) {
+              // Serve default ads.
+              span.addAnnotation("No Ads found based on context. Constructing random Ads.");
+              ads = service.getDefaultAds();
+            }
+            AdResponse reply = AdResponse.newBuilder().addAllAds(ads).build();
+            responseObserver.onNext(reply);
+            responseObserver.onCompleted();
+          } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "GetAds Failed", e.getStatus());
+            return;
           }
-        } else {
-          span.addAnnotation("No Context provided. Constructing random Ads.");
-          ads = service.getDefaultAds();
-        }
-        if (ads.isEmpty()) {
-          // Serve default ads.
-          span.addAnnotation("No Ads found based on context. Constructing random Ads.");
-          ads = service.getDefaultAds();
-        }
-        AdResponse reply = AdResponse.newBuilder().addAllAds(ads).build();
-        responseObserver.onNext(reply);
-        responseObserver.onCompleted();
-      } catch (StatusRuntimeException e) {
-        logger.log(Level.WARNING, "GetAds Failed", e.getStatus());
-        return;
+      } else {
+          AdService service = AdService.getInstance();
+          try {
+            List<Ad> ads = new ArrayList<>();
+            logger.info("[JAEGER_OFF] received ad request (context_words=" + req.getContextKeysCount() + ")");
+            if (req.getContextKeysCount() > 0) {
+              for (int i = 0; i < req.getContextKeysCount(); i++) {
+                Ad ad = service.getAdsByKey(req.getContextKeys(i));
+                if (ad != null) {
+                  ads.add(ad);
+                }
+              }
+            } else {
+              ads = service.getDefaultAds();
+            }
+            if (ads.isEmpty()) {
+              // Serve default ads.
+              ads = service.getDefaultAds();
+            }
+            AdResponse reply = AdResponse.newBuilder().addAllAds(ads).build();
+            responseObserver.onNext(reply);
+            responseObserver.onCompleted();
+          } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "GetAds Failed", e.getStatus());
+            return;
+          }
       }
     }
   }
@@ -242,8 +272,10 @@ public class AdService {
     PrometheusStatsCollector.createAndRegister();
     HTTPServer prometheusServer = new HTTPServer(9090, true);
 
-    // Register Jaeger Tracing.
-    JaegerTraceExporter.createAndRegister("http://jaeger:14268/api/traces", "adservice");
+    if (JAEGER_ON) {
+        // Register Jaeger Tracing.
+        JaegerTraceExporter.createAndRegister("http://jaeger:14268/api/traces", "adservice");
+    }
 
     // Start the RPC server. You shouldn't see any output from gRPC before this.
     logger.info("AdService starting.");

@@ -16,7 +16,6 @@ package main
 
 import (
 	"context"
-	"time"
 
 	"github.com/pkg/errors"
 
@@ -117,8 +116,8 @@ func (fe *frontendServer) getRecommendations(ctx context.Context, userID string,
 }
 
 func (fe *frontendServer) getAd(ctx context.Context) ([]*pb.Ad, error) {
-	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*100)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(ctx, time.Millisecond*100)
+	//defer cancel()
 
 	resp, err := pb.NewAdServiceClient(fe.adSvcConn).GetAds(ctx, &pb.AdRequest{
 		ContextKeys: nil,
