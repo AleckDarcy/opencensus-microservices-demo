@@ -25,19 +25,25 @@ skaffold dev
 # GKE
 
 ## Deploy
-export PROJECT_ID=midyear-guild-279204
+export PROJECT_ID=midyear-guild-279204 # your project id
 
-export CLUSTER_NAME=cluster-1
+export CLUSTER_NAME=cluster-1 # your cluster id
 
-export CLUSTER_NAME=cluster-2
+export CLUSTER_NAME=cluster-2 # your cluster id
+
+export CLUSTER_NAME=cluster-3 # your cluster id
+
+export CLUSTER_ZONE=us-west1-b # zone of your cluster
 
 gcloud auth login
 
 gcloud config set project $PROJECT_ID
 
-gcloud container clusters get-credentials $CLUSTER_NAME --zone us-west1-b --project $PROJECT_ID
+gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
 
-// gcloud container clusters resize $CLUSTER_NAME --zone=us-west1-b --num-nodes=8
+// gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=8 # cluster-1
+
+// gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=1 # cluster-2
 
 gcloud services enable container.googleapis.com
 
@@ -49,7 +55,7 @@ kubectl get service frontend-external
 
 ## Quit
 
-gcloud container clusters resize $CLUSTER_NAME --zone=us-west1-b --num-nodes=0
+gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=0
 
 gcloud services disable containerregistry.googleapis.com
 

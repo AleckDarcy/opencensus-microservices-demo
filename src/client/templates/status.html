@@ -1,0 +1,36 @@
+{{ define "status"}}
+
+    {{ template "header" . }}
+
+        Status, hello world! <br>
+
+        <div class="status">
+            <div class="status">Status: <a id="status">{{ $.status.Status }}</a> (0: Idle, 1: Running) </div>
+            <div class="taskID">Task: <a id="taskID">{{ $.status.TaskID}}</a></div>
+            <div class="caseID">Case: <a id="caseID">{{ $.status.CaseID}}</a></div>
+            <div class="nClient">Client: <a id="nClient">{{ $.status.NClient}}</a></div>
+            <div class="round">Round: <a id="round">{{ $.status.Round}}</a></div>
+        </div>
+
+        <script type="application/javascript">
+            let status = document.getElementById('status').innerText;
+            if (status == "1") {
+                let href = location.href.toString();
+                if (!href.includes("&task=")) {
+                    href = href + "&task=" + document.getElementById('taskID').innerText;
+                }
+
+                setTimeout(function() {
+                    location.replace(href)
+                }, 5000);
+            } else {
+                setTimeout(function() {
+                    alert("redirecting to home page");
+                    location.replace("/");
+                }, 1000)
+            }
+        </script>
+
+    {{ template "footer" . }}
+
+{{ end }}

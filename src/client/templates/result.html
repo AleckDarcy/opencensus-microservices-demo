@@ -1,0 +1,16 @@
+{{ define "result"}}
+
+    {{ template "header" . }}
+
+        Result, hello world! <br>
+
+        Latest result: <br>
+
+        <div class="result">
+            <div class="id">ID: <a id="id">{{ $.id }}</a></div>
+            <div class="result" id="result">{{ renderJSON $.result }}</div>
+        </div>
+
+    {{ template "footer" . }}
+
+{{ end }}

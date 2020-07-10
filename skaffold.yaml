@@ -46,6 +46,8 @@ build:
     workspace: src/prometheus
   - imageName: gcr.io/midyear-guild-279204/jaeger
     workspace: src/jaeger
+  - imageName: gcr.io/midyear-guild-279204/client
+    workspace: src/client
 deploy:
   kubectl:
     manifests:

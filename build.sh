@@ -4,6 +4,7 @@ services=(
     "adservice"
 #    "cartservice"
     "checkoutservice"
+    "client"
     "currencyservice"
 #    "emailservice"
     "frontend"
