@@ -12,6 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var log4js = require('log4js');
+
+log4js.configure({
+  replaceConsole: true,
+  appenders: {
+    stdout: {
+      type: 'stdout'
+    },
+  },
+  categories: {
+    default: { appenders: ['stdout'], level: process.env.LOG_LEVEL },
+    err: { appenders: ['stdout'], level: process.env.LOG_LEVEL },
+    oth: { appenders: ['stdout'], level: process.env.LOG_LEVEL }
+  }
+});
+
+var logger = log4js.getLogger('console');
+
 const path = require('path');
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
@@ -38,11 +56,11 @@ class HipsterShopServer {
    */
   static ChargeServiceHandler (call, callback) {
     try {
-      console.log(`PaymentService#Charge invoked with request ${JSON.stringify(call.request)}`);
+      logger.info(`PaymentService#Charge invoked with request ${JSON.stringify(call.request)}`);
       const response = charge(call.request);
       callback(null, response);
     } catch (err) {
-      console.warn(err);
+      logger.warn(err);
       callback(err);
     }
   }
@@ -53,7 +71,7 @@ class HipsterShopServer {
 
   listen () {
     this.server.bind(`0.0.0.0:${this.port}`, grpc.ServerCredentials.createInsecure());
-    console.log(`PaymentService grpc server listening on ${this.port}`);
+    logger.info(`PaymentService grpc server listening on ${this.port}`);
     this.server.start();
   }
 

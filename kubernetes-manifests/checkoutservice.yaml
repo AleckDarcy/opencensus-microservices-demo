@@ -48,13 +48,15 @@ spec:
             value: "cartservice:7070"
           - name: JAEGER_ON
             value: "false"
+          - name: LOG_LEVEL
+            value: "warn"
           resources:
             requests:
-              cpu: 100m
-              memory: 64Mi
-            limits:
               cpu: 200m
               memory: 128Mi
+            limits:
+              cpu: 400m
+              memory: 256Mi
 ---
 apiVersion: v1
 kind: Service

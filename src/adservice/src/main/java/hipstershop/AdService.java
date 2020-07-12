@@ -44,6 +44,7 @@ import io.opencensus.trace.Tracing;
 import io.opencensus.trace.samplers.Samplers;
 import io.prometheus.client.exporter.HTTPServer;
 import java.io.IOException;
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,24 @@ public class AdService {
   static final AdService service = new AdService();
   private void start() throws IOException {
     int port = Integer.parseInt(System.getenv("PORT"));
+
+    Level level = Level.INFO;
+    String levelS = System.getenv("LOG_LEVEL");
+    switch (levelS) {
+    case "fatal":
+    case "error":
+      logger.setLevel(Level.SEVERE);
+      break;
+    case "warn":
+      logger.setLevel(Level.WARNING);
+      break;
+    case "info":
+      logger.setLevel(Level.INFO);
+      break;
+    default:
+      logger.setLevel(Level.FINEST);
+    }
+
     healthMgr = new HealthStatusManager();
 
     server = ServerBuilder.forPort(port).addService(new AdServiceImpl())

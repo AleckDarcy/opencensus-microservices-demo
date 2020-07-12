@@ -41,16 +41,17 @@
   revision = "e805d8ae0ef5020fedb597f1dd4f4cdfd39b61b6"
 
 [[projects]]
-  branch = "master"
-  digest = "1:a7ada101dd1c583cf3ba58705fbb464637e0c5852beefa900853cee601255909"
+  branch = "feature/calculate"
+  digest = "1:3f5877ba1f4c5352fb033c1814e871e08078d1b66f26dc23d6751cc2698da6a2"
   name = "github.com/AleckDarcy/reload"
   packages = [
     ".",
     "core/errors",
+    "core/log",
     "core/tracer",
   ]
   pruneopts = "T"
-  revision = "87d26eaee172df1fb8856ab7884658e01c4a5c7b"
+  revision = "d19353e7f7879eb2373b271cc3e8da0c51b4df54"
 
 [[projects]]
   digest = "1:4d3743fadafaaf952c89a101a018441146d9ba68b673bdb11c2bbd41145ef302"
@@ -99,6 +100,30 @@
   pruneopts = "T"
   revision = "317e0006254c44a0ac427cc52a0e083ff0b9622f"
   version = "v2.0.0"
+
+[[projects]]
+  digest = "1:6eb58a12ff2e21abe77271d29981dfc74211ae13500a5f34d34c5a098945d8b7"
+  name = "github.com/hashicorp/go-uuid"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "6195a4f20692188e0a389def25559731d1e130f9"
+  version = "v1.0.2"
+
+[[projects]]
+  digest = "1:09cb61dc19af93deae01587e2fdb1c081e0bf48f1a5ad5fa24f48750dc57dce8"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "edb144dfd453055e1e49a3d8b410a660b5a87613"
+  version = "v1.0.3"
+
+[[projects]]
+  digest = "1:5e2f76134f52d912b3d734f255ec154b41536afd2db805fb474222c07d0d76e2"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "60c74ad9be0d874af0ab0daef6ab07c5c5911f0d"
+  version = "v1.6.0"
 
 [[projects]]
   digest = "1:2f5ac2377592d9c21bf10809d68ac24bbaa9f7bc85d3b59e632a6fe8f79083e2"
@@ -303,6 +328,7 @@
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
     "github.com/google/go-cmp/cmp",
+    "github.com/sirupsen/logrus",
     "go.opencensus.io/exporter/jaeger",
     "go.opencensus.io/plugin/ocgrpc",
     "go.opencensus.io/stats/view",

@@ -28,6 +28,24 @@ require('@google-cloud/debug-agent').start({
   }
 });
 
+var log4js = require('log4js');
+
+log4js.configure({
+  replaceConsole: true,
+  appenders: {
+    stdout: {
+      type: 'stdout'
+    },
+  },
+  categories: {
+    default: { appenders: ['stdout'], level: process.env.LOG_LEVEL },
+    err: { appenders: ['stdout'], level: process.env.LOG_LEVEL },
+    oth: { appenders: ['stdout'], level: process.env.LOG_LEVEL }
+  }
+});
+
+var logger = log4js.getLogger('console');
+
 const path = require('path');
 const grpc = require('grpc');
 const request = require('request');
@@ -67,7 +85,7 @@ function _loadProto (path) {
 let _data;
 function _getCurrencyData (callback) {
   if (!_data) {
-    console.log('Fetching currency data...');
+    logger.info('Fetching currency data...');
     request(DATA_URL, (err, res) => {
       if (err) {
         throw new Error(`Error getting data: ${err}`);
@@ -108,7 +126,7 @@ function _carry (amount) {
  * Lists the supported currencies
  */
 function getSupportedCurrencies (call, callback) {
-  console.log('Getting supported currencies...');
+  logger.info('Getting supported currencies...');
   _getCurrencyData((data) => {
     callback(null, {currency_codes: Object.keys(data)});
   });
@@ -118,7 +136,7 @@ function getSupportedCurrencies (call, callback) {
  * Converts between currencies
  */
 function convert (call, callback) {
-  console.log('received conversion request');
+  logger.info('received conversion request');
   try {
     _getCurrencyData((data) => {
       const request = call.request;
@@ -142,12 +160,12 @@ function convert (call, callback) {
       result.nanos = Math.floor(result.nanos);
       result.currency_code = request.to_code;
 
-      console.log(`conversion request successful`);
+      logger.info(`conversion request successful`);
       callback(null, result);
     });
   } catch (err) {
-    console.error('conversion request failed.');
-    console.error(err);
+    logger.error('conversion request failed.');
+    logger.error(err);
     callback(err.message);
   }
 }
@@ -164,7 +182,7 @@ function check (call, callback) {
  * CurrencyConverter service at the sample server port
  */
 function main () {
-  console.log(`Starting gRPC server on port ${PORT}...`);
+  logger.info(`Starting gRPC server on port ${PORT}...`);
   const server = new grpc.Server();
   server.addService(shopProto.CurrencyService.service, {getSupportedCurrencies, convert});
   server.addService(healthProto.Health.service, {check});

@@ -85,10 +85,29 @@ var stackdriverExporter view.Exporter
 
 var jaegerOn string
 
+func getLogLevel() logrus.Level {
+	v := os.Getenv("LOG_LEVEL")
+
+	switch v {
+	case "panic":
+		return logrus.PanicLevel
+	case "fatal":
+		return logrus.FatalLevel
+	case "error":
+		return logrus.ErrorLevel
+	case "warn":
+		return logrus.WarnLevel
+	case "info":
+		return logrus.InfoLevel
+	default:
+		return logrus.DebugLevel
+	}
+}
+
 func main() {
 	ctx := context.Background()
 	log := logrus.New()
-	log.Level = logrus.DebugLevel
+	log.Level = getLogLevel()
 	log.Formatter = &logrus.TextFormatter{}
 
 	mustMapEnv(&jaegerOn, "JAEGER_ON")

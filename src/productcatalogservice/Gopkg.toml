@@ -42,6 +42,10 @@
   version = "0.2.0"
 
 [[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.0.6"
+
+[[constraint]]
   name = "go.opencensus.io"
   version = "0.16.0"
 
@@ -55,7 +59,7 @@
 
 [[constraint]]
   name = "github.com/AleckDarcy/reload"
-  branch = "master"
+  branch = "feature/calculate"
 
 [prune]
   go-tests = true

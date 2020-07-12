@@ -23,7 +23,6 @@ import (
 	"strconv"
 	"time"
 
-	rLog "github.com/AleckDarcy/reload/core/log"
 	rHtml "github.com/AleckDarcy/reload/runtime/html"
 	rTemplate "github.com/AleckDarcy/reload/runtime/html/template"
 	"github.com/gorilla/mux"
@@ -48,12 +47,13 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	r = rHtml.Init(r)
 
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
-	log.WithField("currency", currentCurrency(r)).Info("home")
+	//log.WithField("currency", currentCurrency(r)).Info("home")
+	log.Info("home")
 
 	useDefault := false
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
-		rLog.Logf("[RELOAD] homeHandler getCurrencies fail: %s", err)
+		log.Errorf("[RELOAD] homeHandler getCurrencies fail: %s", err)
 		// [RELOAD: FAULT TOLERANT] starts
 		currencies = []string{"USD"}
 		useDefault = true
@@ -63,7 +63,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	products, err := fe.getProducts(r.Context())
 	if err != nil {
-		rLog.Logf("[RELOAD] homeHandler getProducts fail: %s", err)
+		log.Errorf("[RELOAD] homeHandler getProducts fail: %s", err)
 		// [RELOAD: FAULT TOLERANT] starts
 		//renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
 		//return
@@ -71,7 +71,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
-		rLog.Logf("[RELOAD] homeHandler getCart fail: %s", err)
+		log.Errorf("[RELOAD] homeHandler getCart fail: %s", err)
 		// [RELOAD: FAULT TOLERANT] starts
 		//renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
 		//return
@@ -88,7 +88,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		if i == 0 {
 			price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
 			if err != nil {
-				rLog.Logf("[RELOAD] homeHandler convertCurrency fail: %#v", err)
+				log.Errorf("[RELOAD] homeHandler convertCurrency fail: %#v", err)
 				price = p.GetPriceUsd()
 				useDefault = true
 			}
@@ -101,16 +101,6 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 				ps[i] = productView{p, price}
 			}
 		}
-
-		// [RELOAD: FAULT TOLERANT] starts
-		//price, err := fe.convertCurrency(r.Context(), p.GetPriceUsd(), currentCurrency(r))
-		//if err != nil {
-		//	rLog.Logf("[RELOAD] homeHandler convertCurrency fail: %#v", err)
-		//	renderHTTPError(log, r, w, errors.Wrapf(err, "failed to do currency conversion for product %s", p.GetId()), http.StatusInternalServerError)
-		//	return
-		//}
-		//ps[i] = productView{p, price}
-		// [RELOAD: FAULT TOLERANT] ends
 	}
 
 	if err := templates.ExecuteTemplateReload(r.Context(), w, "home", map[string]interface{}{

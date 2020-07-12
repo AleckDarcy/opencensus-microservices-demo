@@ -10,6 +10,7 @@ COPY . .
 RUN npm install --only=production && \
     npm install sleep && \
     npm install uuid && \
+    npm install log4js && \
     rm -f node_modules/grpc/src/server.js
 
 COPY reload/grpc/src/server.js node_modules/grpc/src

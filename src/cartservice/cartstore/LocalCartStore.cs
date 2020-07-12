@@ -29,14 +29,14 @@ namespace cartservice.cartstore
 
         public Task InitializeAsync()
         {
-            Console.WriteLine("Local Cart Store was initialized");
+            // Console.WriteLine("Local Cart Store was initialized");
 
             return Task.CompletedTask;
         }
 
         public Task AddItemAsync(string userId, string productId, int quantity)
         {
-            Console.WriteLine($"AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}");
+            // Console.WriteLine($"AddItemAsync called with userId={userId}, productId={productId}, quantity={quantity}");
             var newCart = new Hipstershop.Cart
                 {
                     UserId = userId,
@@ -64,7 +64,7 @@ namespace cartservice.cartstore
 
         public Task EmptyCartAsync(string userId)
         {
-            Console.WriteLine($"EmptyCartAsync called with userId={userId}");
+            // Console.WriteLine($"EmptyCartAsync called with userId={userId}");
             userCartItems[userId] = emptyCart;
 
             return Task.CompletedTask;
@@ -72,11 +72,11 @@ namespace cartservice.cartstore
 
         public Task<Hipstershop.Cart> GetCartAsync(string userId)
         {
-            Console.WriteLine($"GetCartAsync called with userId={userId}");
+            // Console.WriteLine($"GetCartAsync called with userId={userId}");
             Hipstershop.Cart cart = null;
             if (!userCartItems.TryGetValue(userId, out cart))
             {
-                Console.WriteLine($"No carts for user {userId}");
+                // Console.WriteLine($"No carts for user {userId}");
                 return Task.FromResult(emptyCart);
             }
 

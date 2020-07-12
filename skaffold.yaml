@@ -36,8 +36,8 @@ build:
     workspace: src/cartservice
   - imageName: gcr.io/midyear-guild-279204/frontend
     workspace: src/frontend
-  - imageName: gcr.io/midyear-guild-279204/loadgenerator
-    workspace: src/loadgenerator
+#  - imageName: gcr.io/midyear-guild-279204/loadgenerator
+#    workspace: src/loadgenerator
   - imageName: gcr.io/midyear-guild-279204/adservice
     workspace: src/adservice
   - imageName: gcr.io/midyear-guild-279204/grafana

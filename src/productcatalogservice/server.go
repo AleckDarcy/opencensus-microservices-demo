@@ -20,7 +20,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"strings"
@@ -32,6 +31,7 @@ import (
 	"cloud.google.com/go/profiler"
 	"contrib.go.opencensus.io/exporter/stackdriver"
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/sirupsen/logrus"
 	"go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/stats/view"
@@ -47,18 +47,41 @@ var (
 	catalogJSON []byte
 
 	port = flag.Int("port", 3550, "port to listen at")
+
+	log = logrus.New()
 )
 
 func init() {
 	c, err := ioutil.ReadFile("products.json")
 	if err != nil {
-		log.Fatalf("failed to open product catalog json file: %v", err)
+		log.Errorf("failed to open product catalog json file: %v", err)
 	}
 	catalogJSON = c
-	log.Printf("successfully parsed product catalog json")
+
+	log.Level = getLogLevel()
+	log.Infof("successfully parsed product catalog json")
 }
 
 var jaegerOn string
+
+func getLogLevel() logrus.Level {
+	v := os.Getenv("LOG_LEVEL")
+
+	switch v {
+	case "panic":
+		return logrus.PanicLevel
+	case "fatal":
+		return logrus.FatalLevel
+	case "error":
+		return logrus.ErrorLevel
+	case "warn":
+		return logrus.WarnLevel
+	case "info":
+		return logrus.InfoLevel
+	default:
+		return logrus.DebugLevel
+	}
+}
 
 func main() {
 	mustMapEnv(&jaegerOn, "JAEGER_ON")
@@ -67,7 +90,7 @@ func main() {
 	go initProfiling("productcatalogservice", "1.0.0")
 	flag.Parse()
 
-	log.Printf("starting grpc server at :%d", *port)
+	log.Infof("starting grpc server at :%d", *port)
 	run(*port)
 	select {}
 }
@@ -104,9 +127,9 @@ func initJaegerTracing() {
 func initStats(exporter *stackdriver.Exporter) {
 	view.RegisterExporter(exporter)
 	if err := view.Register(ocgrpc.DefaultServerViews...); err != nil {
-		log.Printf("Error registering default server views")
+		log.Info("Error registering default server views")
 	} else {
-		log.Printf("Registered default server views")
+		log.Info("Registered default server views")
 	}
 }
 
@@ -128,18 +151,18 @@ func initTracing() {
 	for i := 1; i <= 3; i++ {
 		exporter, err := stackdriver.NewExporter(stackdriver.Options{})
 		if err != nil {
-			log.Printf("info: failed to initialize stackdriver exporter: %+v", err)
+			log.Errorf("info: failed to initialize stackdriver exporter: %+v", err)
 		} else {
 			trace.RegisterExporter(exporter)
 			trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
-			log.Print("registered stackdriver tracing")
+			log.Warn("registered stackdriver tracing")
 
 			// Register the views to collect server stats.
 			initStats(exporter)
 			return
 		}
 		d := time.Second * 10 * time.Duration(i)
-		log.Printf("sleeping %v to retry initializing stackdriver exporter", d)
+		log.Warn("sleeping %v to retry initializing stackdriver exporter", d)
 		time.Sleep(d)
 	}
 	log.Printf("warning: could not initialize stackdriver exporter after retrying, giving up")
@@ -155,16 +178,16 @@ func initProfiling(service, version string) {
 			// ProjectID must be set if not running on GCP.
 			// ProjectID: "my-project",
 		}); err != nil {
-			log.Printf("warn: failed to start profiler: %+v", err)
+			log.Errorf("warn: failed to start profiler: %+v", err)
 		} else {
-			log.Print("started stackdriver profiler")
+			log.Warn("started stackdriver profiler")
 			return
 		}
 		d := time.Second * 10 * time.Duration(i)
-		log.Printf("sleeping %v to retry initializing stackdriver profiler", d)
+		log.Warnf("sleeping %v to retry initializing stackdriver profiler", d)
 		time.Sleep(d)
 	}
-	log.Printf("warning: could not initialize stackdriver profiler after retrying, giving up")
+	log.Warnf("warning: could not initialize stackdriver profiler after retrying, giving up")
 }
 
 func mustMapEnv(target *string, envKey string) {
@@ -181,7 +204,7 @@ func parseCatalog() []*pb.Product {
 	var cat pb.ListProductsResponse
 
 	if err := jsonpb.Unmarshal(bytes.NewReader(catalogJSON), &cat); err != nil {
-		log.Printf("warning: failed to parse the catalog JSON: %v", err)
+		log.Errorf("warning: failed to parse the catalog JSON: %v", err)
 		return nil
 	}
 	return cat.Products
