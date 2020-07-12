@@ -37,11 +37,11 @@ spec:
           value: "0.0.0.0"
         resources:
           requests:
-            cpu: 400m
-            memory: 128Mi
-          limits:
-            cpu: 600m
+            cpu: 800m
             memory: 256Mi
+          limits:
+            cpu: 1200m
+            memory: 512Mi
         readinessProbe:
           initialDelaySeconds: 15
           exec:

@@ -40,11 +40,11 @@ spec:
             value: "error"
         resources:
           requests:
-            cpu: 200m
-            memory: 128Mi
-          limits:
             cpu: 400m
             memory: 256Mi
+          limits:
+            cpu: 800m
+            memory: 512Mi
 ---
 apiVersion: v1
 kind: Service

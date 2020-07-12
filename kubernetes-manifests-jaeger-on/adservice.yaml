@@ -40,11 +40,11 @@ spec:
           value: "warn"
         resources:
           requests:
-            cpu: 400m
-            memory: 360Mi
+            cpu: 800m
+            memory: 720Mi
           limits:
-            cpu: 600m
-            memory: 600Mi
+            cpu: 1200m
+            memory: 1200Mi
         readinessProbe:
           tcpSocket:
             port: 9555

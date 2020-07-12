@@ -45,6 +45,8 @@ gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --p
 
 // gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=1 # cluster-2
 
+// gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=6 # cluster-3
+
 gcloud services enable container.googleapis.com
 
 gcloud services enable containerregistry.googleapis.com
