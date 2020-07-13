@@ -39,12 +39,12 @@ spec:
         - mountPath: /data
           name: redis-data
         resources:
-          limits:
-            memory: 1024Mi
-            cpu: 500m
           requests:
             cpu: 280m
             memory: 800Mi
+          limits:
+            cpu: 3200m
+            memory: 4096Mi
       volumes:
       - name: redis-data
         emptyDir: {}

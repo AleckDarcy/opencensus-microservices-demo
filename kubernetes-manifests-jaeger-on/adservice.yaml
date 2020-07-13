@@ -43,8 +43,8 @@ spec:
             cpu: 800m
             memory: 720Mi
           limits:
-            cpu: 1200m
-            memory: 1200Mi
+            cpu: 3200m
+            memory: 3200Mi
         readinessProbe:
           tcpSocket:
             port: 9555

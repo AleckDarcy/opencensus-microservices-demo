@@ -43,8 +43,8 @@ spec:
             cpu: 280m
             memory: 800Mi
           limits:
-            cpu: 500m
-            memory: 1024Mi
+            cpu: 3200m
+            memory: 4096Mi
       volumes:
       - name: redis-data
         emptyDir: {}
