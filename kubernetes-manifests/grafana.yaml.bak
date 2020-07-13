@@ -42,12 +42,12 @@ spec:
         - mountPath: /var/lib/grafana
           name: grafana-data
         resources:
-          limits:
-            memory: 1024Mi
-            cpu: 500m
           requests:
             cpu: 280m
             memory: 800Mi
+          limits:
+            cpu: 500m
+            memory: 1024Mi
       volumes:
       - name: grafana-data
         emptyDir: {}
