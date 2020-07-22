@@ -18,5 +18,5 @@ RUN apk add --no-cache ca-certificates \
 WORKDIR /client
 COPY --from=builder /go/bin/client /client/server
 COPY ./templates ./templates
-EXPOSE 8080
+EXPOSE 8081
 ENTRYPOINT ["/client/server"]

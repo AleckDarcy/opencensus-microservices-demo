@@ -41,11 +41,11 @@ gcloud config set project $PROJECT_ID
 
 gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
 
-// gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=8 # cluster-1
+gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=8 # cluster-1
 
-// gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=1 # cluster-2
+gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=1 # cluster-2
 
-// gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=6 # cluster-3
+gcloud container clusters resize $CLUSTER_NAME --zone=$CLUSTER_ZONE --num-nodes=6 # cluster-3
 
 gcloud services enable container.googleapis.com
 
@@ -70,3 +70,20 @@ gcloud auth revoke --all
 ## Delete Image
 
 gcloud container images delete [HOSTNAME]/[PROJECT-ID]/[IMAGE]@[IMAGE_DIGEST]
+
+# Go Trace
+
+go get github.com/kumakichi/patch-go-tool-trace && patch-go-tool-trace
+(https://github.com/kumakichi/patch-go-tool-trace)
+
+## Collect
+curl -o trace.out "http://localhost:80/debug/pprof/trace?seconds=15"
+curl -o cpu.out "http://localhost:80/debug/pprof/profile?seconds=15"
+curl -o heap.out http://localhost:80/debug/pprof/heap
+
+## Plot
+go tool trace trace.out
+go tool pprof -http=:8080 cpu.out
+go tool pprof -http=:8888 heap.out
+
+http://127.0.0.1:port/trace?start=1000000&end=1010000

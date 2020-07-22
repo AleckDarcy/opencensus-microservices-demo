@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "feature/calculate"
-  digest = "1:bc7256d84d730c8e4421eb0ab8af3ced28155c18db92064daaea335554403cdd"
+  digest = "1:795704bb9bea6e40b49973aec20384a1877b4f8c02d7372633618068aa305bbb"
   name = "github.com/AleckDarcy/reload"
   packages = [
     "core/client/core",
@@ -15,7 +15,7 @@
     "runtime/html",
   ]
   pruneopts = "T"
-  revision = "642bad7e73ac4137a69597661e0a6c55943bee30"
+  revision = "815e4f6f6c78c4d668a4107b57cdcebb72a47e05"
 
 [[projects]]
   digest = "1:8be75099586ec794fb93c467584431c6725a44648463721df4601bee8550a168"
@@ -112,14 +112,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f78e9279da434c766a6ffe8e9c527cb53f164975a3a2b75a369108df246f19fb"
+  digest = "1:08706c0a3cbe8778885ce6c8c5ca2f216b4927c9d93d4a09a083c62300d3d14d"
   name = "golang.org/x/sys"
   packages = [
     "internal/unsafeheader",
     "unix",
   ]
   pruneopts = "T"
-  revision = "ddb9806d33aed8dbaac1cd6f1cba58952e87f933"
+  revision = "cb9d2d5c56667600bda8ad719c756f125ad55083"
 
 [[projects]]
   digest = "1:514f778824d7307cb3452f6b63b650b0024e320eeca7056d286c665a52e1f89f"
@@ -148,11 +148,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cd36cf92fdf5c9d04aacbcce2a82c20d7384f432bf9f5733b5a4a8b054b97b35"
+  digest = "1:8ff102495b4eeeb015c1541b8db1452d753affa1b54d5018c985ff8a78687f84"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "T"
-  revision = "8698661620497c6fd6244a2fb2ff2518e6a6e892"
+  revision = "5044d0edf98605409e5a75c3bf2a0da143f21d0a"
 
 [[projects]]
   digest = "1:49998649f6ee40f6d77d6ac4c6f6368eac05e4bf662f117c589a99b0e505f52a"
@@ -247,12 +247,14 @@
   input-imports = [
     "github.com/AleckDarcy/reload/core/client/core",
     "github.com/AleckDarcy/reload/core/client/data",
+    "github.com/AleckDarcy/reload/core/client/parser",
     "github.com/AleckDarcy/reload/core/tracer",
     "github.com/AleckDarcy/reload/runtime/html",
     "github.com/gorilla/mux",
     "github.com/pkg/errors",
     "github.com/sirupsen/logrus",
     "go.opencensus.io/plugin/ocgrpc",
+    "golang.org/x/net/html",
     "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"

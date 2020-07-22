@@ -7,8 +7,9 @@
         Latest result: <br>
 
         <div class="result">
-            <div class="id">ID: <a id="id">{{ $.id }}</a></div>
-            <div class="result" id="result">{{ renderJSON $.result }}</div>
+            <div class="task">Task: <a id="task">{{ $.task }}</a></div>
+            <div class="report" id="report">Plot: data={{ renderJSON $.report }}</div><br>
+            <div class="result" id="result">Raw:<br>{{ renderJSON $.result }}</div>
         </div>
 
     {{ template "footer" . }}

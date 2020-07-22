@@ -40,10 +40,10 @@ build:
 #    workspace: src/loadgenerator
   - imageName: gcr.io/midyear-guild-279204/adservice
     workspace: src/adservice
-  - imageName: gcr.io/midyear-guild-279204/grafana
-    workspace: src/grafana
-  - imageName: gcr.io/midyear-guild-279204/prometheus
-    workspace: src/prometheus
+#  - imageName: gcr.io/midyear-guild-279204/grafana
+#    workspace: src/grafana
+#  - imageName: gcr.io/midyear-guild-279204/prometheus
+#    workspace: src/prometheus
   - imageName: gcr.io/midyear-guild-279204/jaeger
     workspace: src/jaeger
   - imageName: gcr.io/midyear-guild-279204/client

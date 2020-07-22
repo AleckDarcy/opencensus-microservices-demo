@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/AleckDarcy/reload/core/tracer"
 	"html/template"
 	"net/http"
 	"os"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/AleckDarcy/reload/core/client/core"
 	"github.com/AleckDarcy/reload/core/client/data"
+	"github.com/AleckDarcy/reload/core/tracer"
 	rHtml "github.com/AleckDarcy/reload/runtime/html"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	port = "8080"
+	port = "8081"
 )
 
 func main() {
@@ -133,9 +133,17 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 		nRound, _ = strconv.ParseInt(sRound, 10, 64)
 	}
 
+	nClients := []int{1, 2, 4, 8, 16, 32, 64, 128}
+	if sClient := r.FormValue("client"); sClient != "" {
+		nClient, _ := strconv.ParseInt(sClient, 10, 64)
+		nClients = []int{int(nClient)}
+	}
+
 	url := r.FormValue("url")
 
 	var caseConf []core.CaseConf
+	var customizer core.Customizer
+
 	switch id {
 	case 1: // trace off & jaeger on
 		caseConf = []core.CaseConf{
@@ -180,6 +188,47 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 				},
 			},
 		}
+	case 4: // trace on with service latency
+		caseConf = []core.CaseConf{
+			{
+				Request: &data.Request{
+					Method:      data.HTTPGet,
+					URL:         url,
+					MessageName: "home",
+					Trace:       &tracer.Trace{},
+					Expect: &data.ExpectedResponse{
+						ContentType: rHtml.ContentTypeHTML,
+						Action:      data.DeserializeTrace | data.CustomizedRspFunc,
+					},
+				},
+			},
+		}
+
+		customizer = RequestLatencyStore
+	case 5: // trace on with trace sampling
+		caseConf = []core.CaseConf{
+			{
+				Request: &data.Request{
+					Method:      data.HTTPGet,
+					URL:         url,
+					MessageName: "home",
+					Trace:       &tracer.Trace{},
+					Expect: &data.ExpectedResponse{
+						ContentType: rHtml.ContentTypeHTML,
+						Action:      data.CustomizedRspFunc,
+					},
+				},
+			},
+		}
+
+		mask := int64(100)
+		if sMask := r.FormValue("mask"); sMask != "" {
+			if mask, _ = strconv.ParseInt(sMask, 10, 64); mask <= 0 {
+				mask = 100
+			}
+		}
+
+		customizer = NewTraceSample(nTest, nRound, mask, nClients)
 	default:
 		s.renderStatus(task, w, log)
 		atomic.StoreInt64(&s.status.Status, core.Idle)
@@ -189,10 +238,11 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 
 	go func() {
 		log.Infof("starting task, test: %d, round: %d, url: %s", nTest, nRound, url)
-		s.result = core.RunPerf(nTest, nRound, []int{1, 2, 4, 8, 16, 32, 64, 128}, caseConf, &s.status)
+		s.result = core.RunPerf(nTest, nRound, nClients, caseConf, &s.status, customizer)
 		s.status.CaseID = 0
 		s.status.NClient = 0
 		s.status.Round = 0
+
 		atomic.StoreInt64(&s.status.Status, core.Idle)
 	}()
 
@@ -200,8 +250,14 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *clientSvc) renderResult(task int64, w http.ResponseWriter, log logrus.FieldLogger) {
+	report := &core.Report{}
+	if s.result != nil {
+		report = core.GetReport(s.result)
+	}
+
 	if err := templates.ExecuteTemplate(w, "result", map[string]interface{}{
 		"task":   task,
+		"report": report,
 		"result": s.result,
 	}); err != nil {
 		log.Error(err)

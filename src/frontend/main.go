@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"time"
 
@@ -152,6 +153,10 @@ func main() {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
 	r.HandleFunc("/robots.txt", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "User-agent: *\nDisallow: /") })
 	r.HandleFunc("/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
+	r.HandleFunc("/debug/pprof/", pprof.Index).Methods(http.MethodGet)
+	r.HandleFunc("/debug/pprof/profile", pprof.Profile).Methods(http.MethodGet)
+	r.HandleFunc("/debug/pprof/trace", pprof.Trace).Methods(http.MethodGet)
+	r.Handle("/debug/pprof/heap", pprof.Handler("heap")).Methods(http.MethodGet)
 
 	var handler http.Handler = r
 	handler = &logHandler{log: log, next: handler} // add logging
