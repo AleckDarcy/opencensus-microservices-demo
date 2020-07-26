@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/AleckDarcy/reload"
+  branch = "feature/calculate"
 
 [[constraint]]
   name = "cloud.google.com/go"
@@ -67,4 +70,4 @@
 
 [prune]
   go-tests = true
-  unused-packages = true
+#  unused-packages = true

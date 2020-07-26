@@ -4,7 +4,7 @@ export GOPATH=$(pwd)/../..
 
 echo $GOPATH
 
-dep ensure -update
+dep ensure
 
 export GOPATH=$TMPPath
 echo $GOPATH
