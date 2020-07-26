@@ -83,6 +83,7 @@ function _loadProto (path) {
  * Uses public data from European Central Bank
  */
 let _data;
+let _currencies;
 function _getCurrencyData (callback) {
   if (!_data) {
     logger.info('Fetching currency data...');
@@ -103,6 +104,7 @@ function _getCurrencyData (callback) {
           return acc;
         }, { 'EUR': '1.0' });
         _data = results;
+        _currencies = Object.keys(_data);
         callback(_data);
       });
     });
@@ -126,9 +128,9 @@ function _carry (amount) {
  * Lists the supported currencies
  */
 function getSupportedCurrencies (call, callback) {
-  logger.info('Getting supported currencies...');
+  // logger.info('Getting supported currencies...');
   _getCurrencyData((data) => {
-    callback(null, {currency_codes: Object.keys(data)});
+    callback(null, {currency_codes: _currencies});
   });
 }
 
@@ -141,26 +143,37 @@ function convert (call, callback) {
     _getCurrencyData((data) => {
       const request = call.request;
 
-      // Convert: from_currency --> EUR
+      // // Convert: from_currency --> EUR
+      // const from = request.from;
+      // const euros = _carry({
+      //   units: from.units / data[from.currency_code],
+      //   nanos: from.nanos / data[from.currency_code]
+      // });
+      //
+      // euros.nanos = Math.round(euros.nanos);
+
+      // // Convert: EUR --> to_currency
+      // const result = _carry({
+      //   units: euros.units * data[request.to_code],
+      //   nanos: euros.nanos * data[request.to_code]
+      // });
+      //
+      // result.units = Math.floor(result.units);
+      // result.nanos = Math.floor(result.nanos);
+      // result.currency_code = request.to_code;
+
       const from = request.from;
-      const euros = _carry({
-        units: from.units / data[from.currency_code],
-        nanos: from.nanos / data[from.currency_code]
-      });
-
-      euros.nanos = Math.round(euros.nanos);
-
-      // Convert: EUR --> to_currency
+      const rate = data[request.to_code] / data[from.currency_code];
       const result = _carry({
-        units: euros.units * data[request.to_code],
-        nanos: euros.nanos * data[request.to_code]
+        units: from.units * rate,
+        nanos: from.nanos * rate
       });
 
       result.units = Math.floor(result.units);
       result.nanos = Math.floor(result.nanos);
       result.currency_code = request.to_code;
 
-      logger.info(`conversion request successful`);
+      // logger.info(`conversion request successful`);
       callback(null, result);
     });
   } catch (err) {

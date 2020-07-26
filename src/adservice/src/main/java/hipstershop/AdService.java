@@ -174,8 +174,8 @@ public class AdService {
           AdService service = AdService.getInstance();
           try {
             List<Ad> ads = new ArrayList<>();
-            logger.info("[JAEGER_OFF] received ad request (context_words=" + req.getContextKeysCount() + ")");
             if (req.getContextKeysCount() > 0) {
+              logger.info("[JAEGER_OFF] received ad request (context_words=" + req.getContextKeysCount() + ")");
               for (int i = 0; i < req.getContextKeysCount(); i++) {
                 Ad ad = service.getAdsByKey(req.getContextKeys(i));
                 if (ad != null) {

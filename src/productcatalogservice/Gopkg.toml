@@ -55,7 +55,7 @@
 
 [[constraint]]
   name = "google.golang.org/grpc"
-  version = "=1.14.0"
+  version = "=1.15.0"
 
 [[constraint]]
   name = "github.com/AleckDarcy/reload"

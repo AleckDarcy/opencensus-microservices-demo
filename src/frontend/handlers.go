@@ -15,23 +15,21 @@
 package main
 
 import (
-	"bytes"
+	"bufio"
+	"encoding/json"
 	"fmt"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
+	"github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/money"
 	"github.com/AleckDarcy/reload/core/tracer"
+	rHtml "github.com/AleckDarcy/reload/runtime/html"
+	rTemplate "github.com/AleckDarcy/reload/runtime/html/template"
 	"html/template"
 	"io"
 	"math/rand"
 	"net/http"
 	"os"
-	"runtime"
 	"strconv"
 	"time"
-	"unsafe"
-
-	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
-	"github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/money"
-	rHtml "github.com/AleckDarcy/reload/runtime/html"
-	rTemplate "github.com/AleckDarcy/reload/runtime/html/template"
 
 	//_ "git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/gorilla/mux"
@@ -126,19 +124,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		//}
 	}
 
-	//ExecuteHomeTemplate(w, map[string]interface{}{
-	//	"session_id":    sessionID(r),
-	//	"request_id":    r.Context().Value(ctxKeyRequestID{}),
-	//	"user_currency": currencyCode,
-	//	"currencies":    currencies,
-	//	"products":      ps,
-	//	"cart_size":     len(cart),
-	//	"banner_color":  os.Getenv("BANNER_COLOR"), // illustrates canary deployments
-	//	"ad":            fe.chooseAd(r, log),
-	//	"render":        r.FormValue("render"),
-	//})
-
-	if err := templates.ExecuteTemplateReload(r.Context(), w, "home", map[string]interface{}{
+	ExecuteHomeTemplate(w, map[string]interface{}{
 		"session_id":    sessionID(r),
 		"request_id":    r.Context().Value(ctxKeyRequestID{}),
 		"user_currency": currencyCode,
@@ -148,27 +134,46 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		"banner_color":  os.Getenv("BANNER_COLOR"), // illustrates canary deployments
 		"ad":            fe.chooseAd(r, log),
 		"render":        r.FormValue("render"),
-	}); err != nil {
-		log.Error(err)
-	}
+	})
+
+	//if err := templates.ExecuteTemplateReload(r.Context(), w, "home", map[string]interface{}{
+	//	"session_id":    sessionID(r),
+	//	"request_id":    r.Context().Value(ctxKeyRequestID{}),
+	//	"user_currency": currencyCode,
+	//	"currencies":    currencies,
+	//	"products":      ps,
+	//	"cart_size":     len(cart),
+	//	"banner_color":  os.Getenv("BANNER_COLOR"), // illustrates canary deployments
+	//	"ad":            fe.chooseAd(r, log),
+	//	"render":        r.FormValue("render"),
+	//}); err != nil {
+	//	log.Error(err)
+	//}
+}
+
+type writer interface {
+	io.Writer
+	io.StringWriter
 }
 
 func ExecuteHomeTemplate(w io.Writer, data map[string]interface{}) {
-	wr := bytes.NewBufferString("")
+	//wr := bytes.NewBufferString("")
+	wr := bufio.NewWriter(w)
 
 	HeaderTemplate(wr, data)
-
 	HomeTemplate(wr, data)
-
 	FooterTemplate(wr, data)
 
-	w.Write(*(*[]byte)(unsafe.Pointer(&home)))
-	runtime.KeepAlive(home)
+	wr.Flush()
+	//w.Write(wr.Bytes())
 }
 
-var homeStr = `
+func HomeTemplate(wr writer, data map[string]interface{}) {
+	wr.WriteString(`
 	<main role="main">
-        <section class="jumbotron text-center mb-0" style="background-color: %s;">
+        <section class="jumbotron text-center mb-0" style="background-color: `)
+	wr.WriteString(data["banner_color"].(string))
+	wr.WriteString(`;">
             <div class="container">
                 <h1 class="jumbotron-heading">
                     One-stop for Hipster Fashion &amp; Style Online
@@ -185,65 +190,79 @@ var homeStr = `
         <div class="py-5 bg-light">
             <div class="container">
             <div class="row">
-                %s
-            </div>
-            <div class="row">
-                %s
-            </div>
+`)
 
-            %s
-            </div>
-        </div>
-    </main>
-`
-
-func HomeTemplate(data map[string]interface{}) string {
-	productsStr := ""
 	if products, ok := data["products"].([]productView); ok {
 		for _, product := range products {
-			productsStr += fmt.Sprintf(`
+			wr.WriteString(`
                 <div class="col-md-4">
                     <div class="card mb-4 box-shadow">
                         <a href="/product/{{.Item.Id}}">
                             <img class="card-img-top" alt =""
                                 style="width: 100%%; height: auto;"
-                                src="%s">
+                                src="`)
+			wr.WriteString(product.Item.Picture)
+			wr.WriteString(`">
                         </a>
                         <div class="card-body">
                             <h5 class="card-title">
-                                %s
+                                `)
+			wr.WriteString(product.Item.Name)
+			wr.WriteString(`
                             </h5>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a href="/product/%s">
+                                    <a href="/product/`)
+			wr.WriteString(product.Item.Id)
+			wr.WriteString(`">
                                         <button type="button" class="btn btn-sm btn-outline-secondary">Buy</button>
                                     </a>
                                 </div>
                                 <small class="text-muted">
-                                    %s
+                                    `)
+
+			money := product.Price
+			fmt.Fprintf(wr, 	"%s %d.%02d", money.CurrencyCode, money.Units, money.Nanos/1e9)
+
+			wr.WriteString(`
                                 </strong>
                                 </small>
                             </div>
                         </div>
                     </div>
                 </div>
-`, product.Item.Picture, product.Item.Name, product.Item.Id, renderMoney(product.Price))
+`)
 		}
 	}
 
-	adStr := AdTemplate(data)
+	wr.WriteString(`
+            </div>
+            <div class="row">
+                `)
 
-	traceStr := ""
+	AdTemplate(wr, data)
+
+	wr.WriteString(`
+            </div>
+            `)
 
 	if fi_trace, ok := data["fi_trace"]; ok {
-		traceStr = fmt.Sprintf(`
+		wr.WriteString(`
                 <div class="trace">
-                    %s
+                    `)
+		e := json.NewEncoder(wr)
+		e.Encode(fi_trace.(*tracer.Trace))
+		//wr.WriteString(rTemplate.MarshalTracing(fi_trace.(*tracer.Trace)))
+		wr.WriteString(`
                 </div>
-`, rTemplate.MarshalTracing(fi_trace.(*tracer.Trace)))
+`)
 	}
 
-	return fmt.Sprintf(homeStr, data["banner_color"], productsStr, adStr, traceStr)
+	wr.WriteString(`
+            </div>
+        </div>
+    </main>
+`)
 }
 
 var headerStr = `
@@ -269,7 +288,11 @@ var headerStr = `
     </header>
 `
 
-var headerStr1 = `
+func HeaderTemplate(wr writer, data map[string]interface{}) {
+	if currencies, ok := data["currencies"]; ok {
+		user_currency := data["user_currency"].(string)
+
+		wr.WriteString(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -290,38 +313,63 @@ var headerStr1 = `
                 <form class="form-inline ml-auto" method="POST" action="/setCurrency" id="currency_form">
 				<select name="currency_code" class="form-control"
 					onchange="document.getElementById('currency_form').submit();" style="width:auto;">
-					%s
+					`)
+		for _, currency := range currencies.([]string) {
+			if currency == user_currency {
+				wr.WriteString(`
+						<option value="`)
+				wr.WriteString(currency)
+				wr.WriteString(`" selected="selected"">`)
+				wr.WriteString(currency)
+				wr.WriteString(`</option>
+`)
+			} else {
+				wr.WriteString(`
+						<option value="`)
+				wr.WriteString(currency)
+				wr.WriteString(`">`)
+				wr.WriteString(currency)
+				wr.WriteString(`</option>
+`)
+			}
+		}
+
+		wr.WriteString(`
 					</select>
-					<a class="btn btn-primary btn-light ml-2" href="/cart" role="button">View Cart (%v)</a>
+					<a class="btn btn-primary btn-light ml-2" href="/cart" role="button">View Cart (`)
+		fmt.Fprintf(wr, "%v", data["cart_size"])
+		wr.WriteString(`</a>
 				</form>
             </div>
         </div>
     </header>
-`
-
-func HeaderTemplate(wr *bytes.Buffer, data map[string]interface{}) string {
-	if currencies, ok := data["currencies"]; ok {
-		user_currency := data["user_currency"].(string)
-		currenciesStr := ""
-		for _, currency := range currencies.([]string) {
-			if currency == user_currency {
-				currenciesStr += fmt.Sprintf(`
-						<option value="%s" selected="selected"">%s</option>
-`, currency, currency)
-			} else {
-				currenciesStr += fmt.Sprintf(`
-						<option value="%s">%s</option>
-`, currency, currency)
-			}
-		}
-
-		return fmt.Sprintf(headerStr1, currenciesStr, data["cart_size"])
+`)
+	} else {
+		wr.WriteString(headerStr)
 	}
-
-	return headerStr
 }
 
-var footerStr = `
+func AdTemplate(wr writer, data map[string]interface{}) {
+	if ad := data["ad"].(*pb.Ad); ad != nil {
+		wr.WriteString(`
+				<div class="container">
+					<div class="alert alert-dark" role="alert">
+						<strong>Advertisement:</strong>
+						<a href="`)
+		wr.WriteString(ad.RedirectUrl)
+		wr.WriteString(`" rel="nofollow" target="_blank" class="alert-link">
+							`)
+		wr.WriteString(ad.Text)
+		wr.WriteString(`
+						</a>
+					</div>
+				</div>
+`)
+	}
+}
+
+func FooterTemplate(wr writer, data map[string]interface{}) {
+	wr.WriteString(`
 	<footer class="py-5 px-5">
         <div class="container">
             <p>
@@ -337,35 +385,20 @@ var footerStr = `
                 </small>
             </p>
             <small class="text-muted">
-                session-id: %s</br>
-                request-id: %s</br>
+                session-id: `)
+	wr.WriteString(data["session_id"].(string))
+	wr.WriteString(
+		`</br>
+                request-id: `)
+	wr.WriteString(data["request_id"].(string))
+	wr.WriteString(`</br>
             </small>
         </div>
     </footer>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 </body>
 </html>
-`
-
-func AdTemplate(data map[string]interface{}) string {
-	if ad := data["ad"].(*pb.Ad); ad != nil {
-		return fmt.Sprintf(`
-				<div class="container">
-					<div class="alert alert-dark" role="alert">
-						<strong>Advertisement:</strong>
-						<a href="%s" rel="nofollow" target="_blank" class="alert-link">
-							%s
-						</a>
-					</div>
-				</div>
-`, ad.RedirectUrl, ad.Text)
-	}
-
-	return ""
-}
-
-func FooterTemplate(data map[string]interface{}) string {
-	return fmt.Sprintf(footerStr, data["session_id"], data["request_id"])
+`)
 }
 
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {

@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "feature/calculate"
-  digest = "1:795704bb9bea6e40b49973aec20384a1877b4f8c02d7372633618068aa305bbb"
+  digest = "1:90ae3a521594ca708b2f866143bc5f33471200c942d1bd27b4b3f342ed9a128e"
   name = "github.com/AleckDarcy/reload"
   packages = [
     "core/client/core",
@@ -15,7 +15,7 @@
     "runtime/html",
   ]
   pruneopts = "T"
-  revision = "815e4f6f6c78c4d668a4107b57cdcebb72a47e05"
+  revision = "4b53de7a5b5c91fe18e657660233d3dac5b2e62e"
 
 [[projects]]
   digest = "1:8be75099586ec794fb93c467584431c6725a44648463721df4601bee8550a168"
@@ -112,14 +112,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:08706c0a3cbe8778885ce6c8c5ca2f216b4927c9d93d4a09a083c62300d3d14d"
+  digest = "1:47f1c6ff5bd9fc551f9383f01f13e5a1df8e8f2e912fb7fa575117f945989800"
   name = "golang.org/x/sys"
   packages = [
     "internal/unsafeheader",
     "unix",
   ]
   pruneopts = "T"
-  revision = "cb9d2d5c56667600bda8ad719c756f125ad55083"
+  revision = "0e2f3a69832c9e0de74996506b9f1373a5873c56"
 
 [[projects]]
   digest = "1:514f778824d7307cb3452f6b63b650b0024e320eeca7056d286c665a52e1f89f"
@@ -148,11 +148,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8ff102495b4eeeb015c1541b8db1452d753affa1b54d5018c985ff8a78687f84"
+  digest = "1:e4218651baa8c7637995726f0bd614617ea632714eb0ff6c665f27da0020f2bf"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "T"
-  revision = "5044d0edf98605409e5a75c3bf2a0da143f21d0a"
+  revision = "43cab4749ae7254af90e92cb2cd767dfc641f6dd"
 
 [[projects]]
   digest = "1:49998649f6ee40f6d77d6ac4c6f6368eac05e4bf662f117c589a99b0e505f52a"

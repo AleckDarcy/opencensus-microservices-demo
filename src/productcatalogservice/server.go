@@ -19,6 +19,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/golang/protobuf/jsonpb"
 	"io/ioutil"
 	"net"
 	"os"
@@ -30,7 +31,6 @@ import (
 
 	"cloud.google.com/go/profiler"
 	"contrib.go.opencensus.io/exporter/stackdriver"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/sirupsen/logrus"
 	"go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/plugin/ocgrpc"
@@ -57,6 +57,17 @@ func init() {
 		log.Errorf("failed to open product catalog json file: %v", err)
 	}
 	catalogJSON = c
+
+	products = func() []*pb.Product {
+		var cat pb.ListProductsResponse
+
+		if err := jsonpb.Unmarshal(bytes.NewReader(catalogJSON), &cat); err != nil {
+			log.Errorf("warning: failed to parse the catalog JSON: %v", err)
+			return nil
+		}
+
+		return cat.Products
+	}()
 
 	log.Level = getLogLevel()
 	log.Infof("successfully parsed product catalog json")
@@ -200,41 +211,30 @@ func mustMapEnv(target *string, envKey string) {
 
 type productCatalog struct{}
 
-func parseCatalog() []*pb.Product {
-	var cat pb.ListProductsResponse
-
-	if err := jsonpb.Unmarshal(bytes.NewReader(catalogJSON), &cat); err != nil {
-		log.Errorf("warning: failed to parse the catalog JSON: %v", err)
-		return nil
-	}
-	return cat.Products
-}
+var products []*pb.Product
 
 func (p *productCatalog) Check(ctx context.Context, req *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
 	return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
 }
 
 func (p *productCatalog) ListProducts(context.Context, *pb.ListProductsRequest) (*pb.ListProductsResponse, error) {
-	return &pb.ListProductsResponse{Products: parseCatalog()}, nil
+	return &pb.ListProductsResponse{Products: products}, nil
 }
 
 func (p *productCatalog) GetProduct(ctx context.Context, req *pb.GetProductRequest) (*pb.Product, error) {
-	var found *pb.Product
-	for i := 0; i < len(parseCatalog()); i++ {
-		if req.Id == parseCatalog()[i].Id {
-			found = parseCatalog()[i]
+	for _, product := range products {
+		if req.Id == product.Id {
+			return product, nil
 		}
 	}
-	if found == nil {
-		return nil, status.Errorf(codes.NotFound, "no product with ID %s", req.Id)
-	}
-	return found, nil
+
+	return nil, status.Errorf(codes.NotFound, "no product with ID %s", req.Id)
 }
 
 func (p *productCatalog) SearchProducts(ctx context.Context, req *pb.SearchProductsRequest) (*pb.SearchProductsResponse, error) {
 	// Intepret query as a substring match in name or description.
 	var ps []*pb.Product
-	for _, p := range parseCatalog() {
+	for _, p := range products {
 		if strings.Contains(strings.ToLower(p.Name), strings.ToLower(req.Query)) ||
 			strings.Contains(strings.ToLower(p.Description), strings.ToLower(req.Query)) {
 			ps = append(ps, p)

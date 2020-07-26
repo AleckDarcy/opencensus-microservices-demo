@@ -33,7 +33,7 @@ func TestHomeTemplate(t *testing.T) {
 			},
 		},
 		"cart_size": 1,
-		"bannder_color": "black",
+		"banner_color": "black",
 		"ad": (*pb.Ad)(nil),
 	}
 
@@ -71,7 +71,7 @@ func BenchmarkTemplate(b *testing.B) {
 			},
 		},
 		"cart_size": 1,
-		"bannder_color": "black",
+		"banner_color": "black",
 		"ad": (*pb.Ad)(nil),
 	}
 
