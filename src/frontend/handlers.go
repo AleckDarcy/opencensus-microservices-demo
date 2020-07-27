@@ -18,11 +18,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
-	"github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/money"
-	"github.com/AleckDarcy/reload/core/tracer"
-	rHtml "github.com/AleckDarcy/reload/runtime/html"
-	rTemplate "github.com/AleckDarcy/reload/runtime/html/template"
 	"html/template"
 	"io"
 	"math/rand"
@@ -31,7 +26,12 @@ import (
 	"strconv"
 	"time"
 
-	//_ "git.apache.org/thrift.git/lib/go/thrift"
+	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
+	"github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/money"
+	"github.com/AleckDarcy/reload/core/tracer"
+	rHtml "github.com/AleckDarcy/reload/runtime/html"
+	rTemplate "github.com/AleckDarcy/reload/runtime/html/template"
+
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -157,7 +157,6 @@ type writer interface {
 }
 
 func ExecuteHomeTemplate(w io.Writer, data map[string]interface{}) {
-	//wr := bytes.NewBufferString("")
 	wr := bufio.NewWriter(w)
 
 	HeaderTemplate(wr, data)
@@ -165,7 +164,6 @@ func ExecuteHomeTemplate(w io.Writer, data map[string]interface{}) {
 	FooterTemplate(wr, data)
 
 	wr.Flush()
-	//w.Write(wr.Bytes())
 }
 
 func HomeTemplate(wr writer, data map[string]interface{}) {
@@ -222,7 +220,7 @@ func HomeTemplate(wr writer, data map[string]interface{}) {
                                     `)
 
 			money := product.Price
-			fmt.Fprintf(wr, 	"%s %d.%02d", money.CurrencyCode, money.Units, money.Nanos/1e9)
+			fmt.Fprintf(wr, "%s %d.%02d", money.CurrencyCode, money.Units, money.Nanos/1e9)
 
 			wr.WriteString(`
                                 </strong>
