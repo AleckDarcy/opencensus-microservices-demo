@@ -16,6 +16,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -89,7 +90,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 
 	ps := make([]productView, len(products))
 
-	rate := 1.0
+	rate := 0.0
 	currencyCode := currentCurrency(r)
 
 	for i, p := range products {
@@ -102,18 +103,11 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 			rate = (float64(price.Units) + float64(price.Nanos)/1e9) / numUSD
 
 			ps[i] = productView{p, price}
-		} else if rate == 1.0 {
+		} else if rate == 1.0 || useDefaultCurrency {
 			ps[i] = productView{p, p.GetPriceUsd()}
 		} else {
-			num := float64(usd.Units) + float64(usd.Nanos)/1e9*rate
-			units := int64(num)
-			nanos := int32((num - float64(units)) * 1e9)
-
-			ps[i] = productView{p, &pb.Money{
-				CurrencyCode: currencyCode,
-				Units:        units,
-				Nanos:        nanos,
-			}}
+			price, _ := fe.convertCurrency(r.Context(), usd, currencyCode)
+			ps[i] = productView{p, price}
 		}
 
 		//if useDefault {
@@ -124,7 +118,7 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		//}
 	}
 
-	ExecuteHomeTemplate(w, map[string]interface{}{
+	ExecuteHomeTemplate(r.Context(), w, map[string]interface{}{
 		"session_id":    sessionID(r),
 		"request_id":    r.Context().Value(ctxKeyRequestID{}),
 		"user_currency": currencyCode,
@@ -153,10 +147,39 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 
 type writer interface {
 	io.Writer
-	io.StringWriter
+	WriteString(s string) (int, error)
 }
 
-func ExecuteHomeTemplate(w io.Writer, data map[string]interface{}) {
+func ExecuteHomeTemplate(ctx context.Context, w http.ResponseWriter, data map[string]interface{}) {
+	if metaVal := ctx.Value(tracer.ContextMetaKey{}); metaVal != nil {
+		meta := metaVal.(*tracer.ContextMeta)
+		if trace, ok := tracer.Store.GetByContextMeta(meta); ok {
+			trace.Records = append(trace.Records, &tracer.Record{
+				Type:        tracer.RecordType_RecordSend,
+				Timestamp:   time.Now().UnixNano(),
+				MessageName: meta.Url(),
+				Uuid:        meta.UUID(),
+				Service:     tracer.ServiceUUID,
+			})
+
+			trace.Rlfis = nil
+			trace.Tfis = nil
+
+			data["fi_trace"] = trace
+
+			//delete trace from tracer.Store
+			tracer.Store.DeleteByContextMeta(meta)
+		}
+	}
+
+	if data["render"] == "json" {
+		w.Header().Set(rHtml.ContentType, rHtml.ContentTypeJSON)
+
+		json.NewEncoder(w).Encode(data)
+
+		return
+	}
+
 	wr := bufio.NewWriter(w)
 
 	HeaderTemplate(wr, data)
@@ -187,80 +210,81 @@ func HomeTemplate(wr writer, data map[string]interface{}) {
 
         <div class="py-5 bg-light">
             <div class="container">
-            <div class="row">
+            	<div class="row">
 `)
 
 	if products, ok := data["products"].([]productView); ok {
 		for _, product := range products {
 			wr.WriteString(`
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <a href="/product/{{.Item.Id}}">
-                            <img class="card-img-top" alt =""
-                                style="width: 100%%; height: auto;"
-                                src="`)
+                	<div class="col-md-4">
+                 	   <div class="card mb-4 box-shadow">
+                 	       <a href="/product/`)
+			wr.WriteString(product.Item.Id)
+			wr.WriteString(`">
+                    	        <img class="card-img-top" alt =""
+                     	           style="width: 100%%; height: auto;"
+                     	           src="`)
 			wr.WriteString(product.Item.Picture)
 			wr.WriteString(`">
-                        </a>
-                        <div class="card-body">
-                            <h5 class="card-title">
+                        	</a>
+                        	<div class="card-body">
+                            	<h5 class="card-title">
                                 `)
 			wr.WriteString(product.Item.Name)
 			wr.WriteString(`
-                            </h5>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="/product/`)
+                            	</h5>
+                            	<div class="d-flex justify-content-between align-items-center">
+                                	<div class="btn-group">
+                                    	<a href="/product/`)
 			wr.WriteString(product.Item.Id)
 			wr.WriteString(`">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Buy</button>
-                                    </a>
-                                </div>
-                                <small class="text-muted">
-                                    `)
+                                        	<button type="button" class="btn btn-sm btn-outline-secondary">Buy</button>
+                                    	</a>
+                                	</div>
+                                	<small class="text-muted">
+`)
 
 			money := product.Price
-			fmt.Fprintf(wr, "%s %d.%02d", money.CurrencyCode, money.Units, money.Nanos/1e9)
+			fmt.Fprintf(wr, "%s %d.%02d", money.CurrencyCode, money.Units, money.Nanos/1e7)
 
 			wr.WriteString(`
-                                </strong>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                	</small>
+                            	</div>
+                        	</div>
+                    	</div>
+                	</div>
 `)
 		}
 	}
 
 	wr.WriteString(`
-            </div>
-            <div class="row">
-                `)
+            	</div>
+            	<div class="row">
+`)
 
 	AdTemplate(wr, data)
 
-	wr.WriteString(`
-            </div>
-            `)
-
 	if fi_trace, ok := data["fi_trace"]; ok {
 		wr.WriteString(`
+				</div>
                 <div class="trace">
                     `)
-		e := json.NewEncoder(wr)
-		e.Encode(fi_trace.(*tracer.Trace))
+		json.NewEncoder(wr).Encode(fi_trace)
 		//wr.WriteString(rTemplate.MarshalTracing(fi_trace.(*tracer.Trace)))
 		wr.WriteString(`
                 </div>
+			</div>
+        </div>
+    </main>
 `)
-	}
-
-	wr.WriteString(`
+	} else {
+		wr.WriteString(`
+				</div>
             </div>
         </div>
     </main>
 `)
+	}
 }
 
 var headerStr = `
@@ -317,7 +341,7 @@ func HeaderTemplate(wr writer, data map[string]interface{}) {
 				wr.WriteString(`
 						<option value="`)
 				wr.WriteString(currency)
-				wr.WriteString(`" selected="selected"">`)
+				wr.WriteString(`" selected="selected">`)
 				wr.WriteString(currency)
 				wr.WriteString(`</option>
 `)
@@ -685,7 +709,7 @@ func (fe *frontendServer) chooseAd(r *http.Request, log logrus.FieldLogger) *pb.
 
 	ads, err := fe.getAd(ctx)
 	if err != nil {
-		log.Warnf("failed to retrieve ads: %s", err.Error())
+		log.Errorf("failed to retrieve ads: %s", err.Error())
 
 		// [RELOAD]
 		price := &pb.Money{

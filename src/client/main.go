@@ -154,7 +154,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 					MessageName: "home",
 					Trace:       nil,
 					Expect: &data.ExpectedResponse{
-						ContentType: rHtml.ContentTypeJSON,
+						ContentType: rHtml.ContentTypeHTML,
 					},
 				},
 			},
@@ -168,7 +168,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 					MessageName: "home",
 					Trace:       &tracer.Trace{},
 					Expect: &data.ExpectedResponse{
-						ContentType: rHtml.ContentTypeJSON,
+						ContentType: rHtml.ContentTypeHTML,
 					},
 				},
 			},
@@ -182,7 +182,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 					MessageName: "home",
 					Trace:       &tracer.Trace{},
 					Expect: &data.ExpectedResponse{
-						ContentType: rHtml.ContentTypeJSON,
+						ContentType: rHtml.ContentTypeHTML,
 						Action:      data.DeserializeTrace,
 					},
 				},
@@ -197,7 +197,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 					MessageName: "home",
 					Trace:       &tracer.Trace{},
 					Expect: &data.ExpectedResponse{
-						ContentType: rHtml.ContentTypeJSON,
+						ContentType: rHtml.ContentTypeHTML,
 						Action:      data.DeserializeTrace | data.CustomizedRspFunc,
 					},
 				},
@@ -214,7 +214,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 					MessageName: "home",
 					Trace:       &tracer.Trace{},
 					Expect: &data.ExpectedResponse{
-						ContentType: rHtml.ContentTypeJSON,
+						ContentType: rHtml.ContentTypeHTML,
 						Action:      data.CustomizedRspFunc,
 					},
 				},

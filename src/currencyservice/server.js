@@ -163,18 +163,22 @@ function convert (call, callback) {
       // result.currency_code = request.to_code;
 
       const from = request.from;
-      const rate = data[request.to_code] / data[from.currency_code];
-      const result = _carry({
-        units: from.units * rate,
-        nanos: from.nanos * rate
-      });
+      if (request.to_code == from.currency_code) {
+        callback(null, from);
+      } else {
+        const rate = data[request.to_code] / data[from.currency_code];
+        const result = _carry({
+          units: from.units * rate,
+          nanos: from.nanos * rate
+        });
 
-      result.units = Math.floor(result.units);
-      result.nanos = Math.floor(result.nanos);
-      result.currency_code = request.to_code;
+        result.units = Math.floor(result.units);
+        result.nanos = Math.floor(result.nanos);
+        result.currency_code = request.to_code;
 
-      // logger.info(`conversion request successful`);
-      callback(null, result);
+        // logger.info(`conversion request successful`);
+        callback(null, result);
+      }
     });
   } catch (err) {
     logger.error('conversion request failed.');

@@ -2,9 +2,44 @@ package main
 
 import (
 	"bytes"
+	"context"
 	pb "github.com/AleckDarcy/opencensus-microservices-demo/src/frontend/genproto"
+	"net/http"
 	"testing"
+	"time"
 )
+
+type mockResponseWriter struct {
+	*bytes.Buffer
+}
+
+func (wr *mockResponseWriter) Header() http.Header {
+	return nil
+}
+
+func (wr *mockResponseWriter) WriteHeader(statusCode int) {
+
+}
+
+type emptyCtx int
+
+var mockCtx = emptyCtx(0)
+
+func (*emptyCtx) Deadline() (deadline time.Time, ok bool) {
+	return
+}
+
+func (*emptyCtx) Done() <-chan struct{} {
+	return nil
+}
+
+func (*emptyCtx) Err() error {
+	return nil
+}
+
+func (*emptyCtx) Value(key interface{}) interface{} {
+	return nil
+}
 
 func TestHomeTemplate(t *testing.T) {
 	data := map[string]interface{}{
@@ -32,14 +67,14 @@ func TestHomeTemplate(t *testing.T) {
 				},
 			},
 		},
-		"cart_size": 1,
+		"cart_size":    1,
 		"banner_color": "black",
-		"ad": (*pb.Ad)(nil),
+		"ad":           (*pb.Ad)(nil),
 	}
 
-	wr := bytes.NewBufferString("")
-
-	ExecuteHomeTemplate(wr, data)
+	wr := &mockResponseWriter{bytes.NewBufferString("")}
+	t.Log(context.WithValue(nil, "test", nil))
+	ExecuteHomeTemplate(context.WithValue(&mockCtx, "test", nil), wr, data)
 
 	t.Log(wr.String())
 }
@@ -70,14 +105,14 @@ func BenchmarkTemplate(b *testing.B) {
 				},
 			},
 		},
-		"cart_size": 1,
+		"cart_size":    1,
 		"banner_color": "black",
-		"ad": (*pb.Ad)(nil),
+		"ad":           (*pb.Ad)(nil),
 	}
 
 	for i := 0; i < b.N; i++ {
-		wr := bytes.NewBufferString("")
+		wr := &mockResponseWriter{bytes.NewBufferString("")}
 
-		ExecuteHomeTemplate(wr, data)
+		ExecuteHomeTemplate(context.WithValue(&mockCtx, "test", nil), wr, data)
 	}
 }
