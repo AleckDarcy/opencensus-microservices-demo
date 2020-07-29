@@ -67,7 +67,7 @@ func (t *TraceSample) RoundInit() {
 	t.nClient.iRound++
 }
 
-func (t *TraceSample) RspFunc(rsp *data.Response) {
+func (t *TraceSample) RspFunc(req *data.Request, rsp *data.Response) {
 	if traceID := atomic.AddInt64(&t.round.traceID, 1); traceID%t.mask == 0 {
 		node, _ := html.Parse(strings.NewReader(string(rsp.Body)))
 		if traceNode := parser.GetElementByClass(node, "trace"); traceNode != nil {

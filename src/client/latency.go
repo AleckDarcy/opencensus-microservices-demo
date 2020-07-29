@@ -54,7 +54,7 @@ func (s *requestLatencyStore) NClientInit() {
 
 func (s *requestLatencyStore) RoundInit() {}
 
-func (s *requestLatencyStore) RspFunc(rsp *data.Response) {
+func (s *requestLatencyStore) RspFunc(req *data.Request, rsp *data.Response) {
 	trace := rsp.Trace
 
 	reqLatencies := &RequestLatencies{}

@@ -38,7 +38,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", svc.homeHandler).Methods(http.MethodGet)
 	r.HandleFunc("/perf", svc.perfHandler).Methods(http.MethodPost, http.MethodGet)
-
 	handler := &logHandler{log: log, next: r}
 
 	log.Infof("starting server on " + addr + ":" + srvPort)
@@ -139,6 +138,13 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 		nClients = []int{int(nClient)}
 	}
 
+	nSample := int64(1)
+	if sSample := r.FormValue("sample"); sSample != "" {
+		if nSample, _ = strconv.ParseInt(sSample, 10, 64); nSample <= 0 {
+			nSample = 1
+		}
+	}
+
 	url := r.FormValue("url")
 
 	var caseConf []core.CaseConf
@@ -157,6 +163,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 						ContentType: rHtml.ContentTypeHTML,
 					},
 				},
+				Sample: 0,
 			},
 		}
 	case 2: // trace on
@@ -171,6 +178,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 						ContentType: rHtml.ContentTypeHTML,
 					},
 				},
+				Sample: nSample,
 			},
 		}
 	case 3: // trace on with frontend latency
@@ -186,6 +194,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 						Action:      data.DeserializeTrace,
 					},
 				},
+				Sample: nSample,
 			},
 		}
 	case 4: // trace on with service latency
@@ -201,11 +210,12 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 						Action:      data.DeserializeTrace | data.CustomizedRspFunc,
 					},
 				},
+				Sample: nSample,
 			},
 		}
 
 		customizer = RequestLatencyStore
-	case 5: // trace on with trace sampling
+	case 5: // trace on with trace extraction
 		caseConf = []core.CaseConf{
 			{
 				Request: &data.Request{
@@ -218,6 +228,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 						Action:      data.CustomizedRspFunc,
 					},
 				},
+				Sample: nSample,
 			},
 		}
 
@@ -229,6 +240,40 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		customizer = NewTraceSample(nTest, nRound, mask, nClients)
+	case 6: // trace on with trace sampling
+		if len(nClients) != 1 {
+			nClients = []int{128}
+		}
+
+		caseConf = []core.CaseConf{
+			{
+				Request: &data.Request{
+					Method:      data.HTTPGet,
+					URL:         url,
+					MessageName: "home",
+					Trace:       &tracer.Trace{},
+					Expect: &data.ExpectedResponse{
+						ContentType: rHtml.ContentTypeHTML,
+					},
+				},
+				Sample: 0,
+			},
+		}
+
+		for i := int64(1); i <= nTest && i <= 1024; i *= 4 {
+			caseConf = append(caseConf, core.CaseConf{
+				Request: &data.Request{
+					Method:      data.HTTPGet,
+					URL:         url,
+					MessageName: "home",
+					Trace:       &tracer.Trace{},
+					Expect: &data.ExpectedResponse{
+						ContentType: rHtml.ContentTypeHTML,
+					},
+				},
+				Sample: i,
+			})
+		}
 	default:
 		s.renderStatus(task, w, log)
 		atomic.StoreInt64(&s.status.Status, core.Idle)
