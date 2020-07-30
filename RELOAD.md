@@ -2,6 +2,7 @@
 
 ## Versions
 Java: 1.8
+Gradle: 6.1.1
 
 ## Initialize Gradle cache for Java
 If you already have gradle caches like *~/.gradle/caches/modules-2/files-2.1*, skip this step.
@@ -12,8 +13,14 @@ Inside folder *opencensus-microservices-demo/src/adservice*, execute:
 ```
 
 ## Generate GRPC for Java
-Clone code from *https://github.com/AleckDarcy/reload.git*, branch: feature/multi_threads.
+Clone code from *https://github.com/AleckDarcy/reload.git*, branch: feature/calculate.
 Replace **.jar** files under **~/.gradle/caches** (~/.gradle/caches/modules-2/files-2.1/io.grpc/grpc-core/1.12.0/541a5c68ce85c03190e29bc9e0ec611d2b75ff24/grpc-core-1.12.0.jar & ~/.gradle/caches/modules-2/files-2.1/io.grpc/grpc-stub/1.12.0/fbd2bafe09a89442ab3d7a8d8b3e8bafbd59b4e0/grpc-stub-1.12.0.jar) by .jar files under *reload/java/grpc*.
+
+## Download Dependencies
+Execute:
+```shell
+./build.sh
+```
 
 # Run
 Execute:
@@ -21,10 +28,10 @@ Execute:
 skaffold dev
 ```
 
-
 # GKE
 
 ## Deploy
+
 export PROJECT_ID=midyear-guild-279204 # your project id
 
 export CLUSTER_NAME=cluster-1 # your cluster id
