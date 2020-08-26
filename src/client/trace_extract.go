@@ -14,9 +14,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-func NewTraceSample(nTest, nRound, mask int64, nClients []int) core.Customizer {
-	t := &TraceSample{
-		NClients: make([]NClientTraceSample, len(nClients)),
+func NewTraceExtract(nTest, nRound, mask int64, nClients []int) core.Customizer {
+	t := &TraceExtract{
+		NClients: make([]NClientTraceExtract, len(nClients)),
 
 		mask: mask,
 	}
@@ -24,7 +24,7 @@ func NewTraceSample(nTest, nRound, mask int64, nClients []int) core.Customizer {
 	for i := range t.NClients {
 		nClient := &t.NClients[i]
 		nClient.NClient = nClients[i]
-		nClient.Rounds = make([]RoundTraceSample, nRound)
+		nClient.Rounds = make([]RoundTraceExtract, nRound)
 
 		for j := range nClient.Rounds {
 			round := &nClient.Rounds[j]
@@ -35,39 +35,39 @@ func NewTraceSample(nTest, nRound, mask int64, nClients []int) core.Customizer {
 	return t
 }
 
-type TraceSample struct {
-	NClients []NClientTraceSample
+type TraceExtract struct {
+	NClients []NClientTraceExtract
 
 	mask     int64
 	iNClient int
-	nClient  *NClientTraceSample // current NClientTraceSample
-	round    *RoundTraceSample   // current RoundTraceSample
+	nClient  *NClientTraceExtract // current NClientTraceExtract
+	round    *RoundTraceExtract   // current RoundTraceExtract
 }
 
-type NClientTraceSample struct {
+type NClientTraceExtract struct {
 	NClient int
-	Rounds  []RoundTraceSample
+	Rounds  []RoundTraceExtract
 
 	iRound int
 }
 
-type RoundTraceSample struct {
+type RoundTraceExtract struct {
 	Traces []*tracer.Trace
 
 	traceID int64
 }
 
-func (t *TraceSample) NClientInit() {
+func (t *TraceExtract) NClientInit() {
 	t.nClient = &t.NClients[t.iNClient]
 	t.iNClient++
 }
 
-func (t *TraceSample) RoundInit() {
+func (t *TraceExtract) RoundInit() {
 	t.round = &t.nClient.Rounds[t.nClient.iRound]
 	t.nClient.iRound++
 }
 
-func (t *TraceSample) RspFunc(req *data.Request, rsp *data.Response) {
+func (t *TraceExtract) RspFunc(req *data.Request, rsp *data.Response) {
 	if traceID := atomic.AddInt64(&t.round.traceID, 1); traceID%t.mask == 0 {
 		node, _ := html.Parse(strings.NewReader(string(rsp.Body)))
 		if traceNode := parser.GetElementByClass(node, "trace"); traceNode != nil {
@@ -93,14 +93,14 @@ func (t *TraceSample) RspFunc(req *data.Request, rsp *data.Response) {
 	}
 }
 
-func (t *TraceSample) NClientFinish() interface{} {
+func (t *TraceExtract) NClientFinish() interface{} {
 	return nil
 }
 
-func (t *TraceSample) RoundFinish() interface{} {
+func (t *TraceExtract) RoundFinish() interface{} {
 	return nil
 }
 
-func (t *TraceSample) TestFinish() interface{} {
+func (t *TraceExtract) TestFinish() interface{} {
 	return t
 }

@@ -306,7 +306,8 @@ func mustMapEnv(target *string, envKey string) {
 func mustConnGRPC(ctx context.Context, addr string) *grpc.ClientConn {
 	conn, err := grpc.DialContext(ctx, addr,
 		grpc.WithInsecure(),
-		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}))
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),
+		grpc.WithDisableRetry())
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}

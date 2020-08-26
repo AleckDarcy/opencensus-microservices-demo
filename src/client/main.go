@@ -181,22 +181,22 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 				Sample: nSample,
 			},
 		}
-	case 3: // trace on with frontend latency
-		caseConf = []core.CaseConf{
-			{
-				Request: &data.Request{
-					Method:      data.HTTPGet,
-					URL:         url,
-					MessageName: "home",
-					Trace:       &tracer.Trace{},
-					Expect: &data.ExpectedResponse{
-						ContentType: rHtml.ContentTypeHTML,
-						Action:      data.DeserializeTrace,
-					},
-				},
-				Sample: nSample,
-			},
-		}
+	//case 3: // trace on with frontend latency
+	//	caseConf = []core.CaseConf{
+	//		{
+	//			Request: &data.Request{
+	//				Method:      data.HTTPGet,
+	//				URL:         url,
+	//				MessageName: "home",
+	//				Trace:       &tracer.Trace{},
+	//				Expect: &data.ExpectedResponse{
+	//					ContentType: rHtml.ContentTypeHTML,
+	//					Action:      data.DeserializeTrace,
+	//				},
+	//			},
+	//			Sample: nSample,
+	//		},
+	//	}
 	case 4: // trace on with service latency
 		caseConf = []core.CaseConf{
 			{
@@ -239,7 +239,7 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		customizer = NewTraceSample(nTest, nRound, mask, nClients)
+		customizer = NewTraceExtract(nTest, nRound, mask, nClients)
 	case 6: // trace on with trace sampling
 		if len(nClients) != 1 {
 			nClients = []int{128}
@@ -274,6 +274,8 @@ func (s *clientSvc) perfHandler(w http.ResponseWriter, r *http.Request) {
 				Sample: i,
 			})
 		}
+
+		customizer = &TraceSampleRate{}
 	default:
 		s.renderStatus(task, w, log)
 		atomic.StoreInt64(&s.status.Status, core.Idle)
