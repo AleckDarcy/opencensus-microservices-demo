@@ -113,6 +113,11 @@ func run(port int) string {
 	}
 	srv := grpc.NewServer(grpc.StatsHandler(&ocgrpc.ServerHandler{}))
 	svc := &productCatalog{}
+	svc.adSvcConn ,_= grpc.DialContext( context.Background(), "adservice:9555",
+		grpc.WithInsecure(),
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),
+		grpc.WithDisableRetry())
+
 	pb.RegisterProductCatalogServiceServer(srv, svc)
 	healthpb.RegisterHealthServer(srv, svc)
 	go srv.Serve(l)
@@ -209,7 +214,19 @@ func mustMapEnv(target *string, envKey string) {
 	*target = v
 }
 
-type productCatalog struct{}
+type productCatalog struct{
+	adSvcConn *grpc.ClientConn
+}
+
+func (p *productCatalog) getAd(ctx context.Context) ([]*pb.Ad, error) {
+	//ctx, cancel := context.WithTimeout(ctx, time.Millisecond*100)
+	//defer cancel()
+
+	resp, err := pb.NewAdServiceClient(p.adSvcConn).GetAds(ctx, &pb.AdRequest{
+		ContextKeys: nil,
+	})
+	return resp.GetAds(), err
+}
 
 var products []*pb.Product
 
@@ -217,7 +234,9 @@ func (p *productCatalog) Check(ctx context.Context, req *healthpb.HealthCheckReq
 	return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
 }
 
-func (p *productCatalog) ListProducts(context.Context, *pb.ListProductsRequest) (*pb.ListProductsResponse, error) {
+func (p *productCatalog) ListProducts(ctx context.Context, req *pb.ListProductsRequest) (*pb.ListProductsResponse, error) {
+	p.getAd(ctx)
+
 	return &pb.ListProductsResponse{Products: products}, nil
 }
 

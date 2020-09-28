@@ -718,8 +718,9 @@ func (fe *frontendServer) chooseAd(r *http.Request, log logrus.FieldLogger) *pb.
 			Nanos:        0,
 		}
 
-		//if !useDefault {
-		price, _ = fe.convertCurrency(ctx, price, currentCurrency(r))
+		price, _ = fe.getShippingQuote(ctx, nil, "USD")
+		//if err != nil {
+		//	log.Errorf("failed to retrieve price: %s", err.Error())
 		//}
 
 		defaultAd := &pb.Ad{
