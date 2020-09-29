@@ -4,6 +4,13 @@
 Java: 1.8
 Gradle: 6.1.1
 
+## Clone Reload Repo
+https://github.com/AleckDarcy/reload.git
+execute:
+```shell script
+gradle goBuild
+```
+
 ## Initialize Gradle cache for Java
 If you already have gradle caches like *~/.gradle/caches/modules-2/files-2.1*, skip this step.
 
